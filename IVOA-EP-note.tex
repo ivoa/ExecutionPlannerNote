@@ -568,23 +568,6 @@ If the client does not understand how to use a Portainer service, then it can ch
 use one of the simpler UWS interfaces to run the Docker container Task.
 
 
-
-
-
-
-
-
-\section{Authentication}
-Different Service instances may have different criteria for who they will allow to execute Tasks on their Service.
-
-Some services, such as the public Service provided by the BinderHub Federation may be free and open to the public to use [1].
-\\
-An \ivoep service that represents a public access Service like this may accept any HTTP request, without authentication, and would evaluate the Task criteria without reference to a user identity.
-
-However, most computing services will be funded to provide compute resources for specific communities, and will require some level of user authentication to control access to their resources.
-
-TODO - examples
-
 \section{Computing resources}
 
 Request/response section describing the required and available resources.
@@ -640,6 +623,55 @@ Example reference to data in S3 (internal and external).
 Examples, Amazon, DigitalOcean, Openstack, STFC Echo.
 Identity and auth ..
 
+
+\section{Authentication}
+Different Service instances may have different criteria for who they will allow to execute Tasks on their Service.
+
+Some services, such as the public Service provided by the BinderHub Federation may be free and open to the public to use [1].
+\\
+An \ivoep service that represents a public access Service like this may accept any HTTP request, with or without authentication.
+However, most computing services will be funded to provide compute resources for specific communities, and will require some level of user authentication to control access to their resources.
+\\
+If an authenticated identity is provided as part of the \codeword{/accepts}, then the EP service can use this identity as part of the evaluation criteria.
+\begin{lstlisting}[]
+    HTTP GET /accepts?tasktype=docker-container
+    Authorization: Bearer SlAV32hkKG
+\end{lstlisting}
+
+If the authenticated identity is allowed to perform the task on the target platform, the EP service replies with a positive
+response as normal.
+\begin{lstlisting}[language=json]
+    {
+    "reponseword": "YES",
+    "servicetype": "portainer",
+    "serviceinfo": {
+        "endpoint": "http://portainer.example.org/",
+        }
+    }
+\end{lstlisting}
+
+If the authenticated identity is not allowed to perform the task on the target platform, the EP service may
+reply with a simple negative response.
+\begin{lstlisting}[language=json]
+    {
+    "reponseword": "NO"
+    }
+\end{lstlisting}
+Or it may provide additional information about the reason why.
+\begin{lstlisting}[language=json]
+    {
+    "reponseword": "NO"
+    "reponseinfo": {
+        "reasons": [
+                {
+                "httpcode": 403,
+                "text": "Not authorised"
+                }
+            ]
+        }
+    }
+\end{lstlisting}
+
 \section{Deployment and discovery}
 \subsection{Service deployment}
 The \ivoep interface is designed to work both within the context of the IVOA community, or as apart of a separate domain outside the IVOA, such as the ESCAPE ESAP community.
@@ -664,10 +696,6 @@ The \ivoep specification defines a VOResource metadata extension for describing 
 However, although registering services in the IVOA registry is encouraged, it is not required for the \ivoep services to function.
 For example, a project like ESCAPE may choose to deploy their own service discovery mechanism, separate from the IVOA registry.
 This can be as simple as a database table maintained inside the an ESAP portal that lists the \ivoep services associated with the computing platforms available to that community.
-
-
-
-
 
 \section{Data formats}
 Default data format for \ivoep services is to use 
