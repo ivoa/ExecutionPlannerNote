@@ -159,39 +159,69 @@ Different types of Tasks will have different metadata to describe them and diffe
 
 As the system evolves, we can see the criteria or rules for accepting a Task growing in complexity over time. If we imagine a system capable of deploying and executing a complex chain of interconnected software components, the criteria for accepting or rejecting a complex Task like this will also grow in complexity.
 
-The design of the \ivoep interface aims to address this complexity by using the Separation of Concerns \footurl{https://en.wikipedia.org/wiki/Separation_of_concerns} pattern to delegate as much as possible to the Service instances
+The design of the \ivoep interface aims to address this complexity by using the Separation of Concerns\footurl{https://en.wikipedia.org/wiki/Separation_of_concerns} pattern to delegate as much as possible to the Service instances
 
-The \ivoep interface defines a simple stateless HTTP interface that supports either GET or POST requests.
+The \ivoep interface defines a simple stateless HTTP interface that supports \codeword{GET} and \codeword{POST} requests.
 The following sections use a series of example Task types to illustrate how the \ivoep service interface works.
 In all of these cases, the \ivoep service interface provides a common method to query Services about their capabilities.   
 
-\SectionRef{sec:data-formats} describes how \ivoep requests and responses should be serialised in HTTP requests.
-For simplicity, this document will represent complex \ivoep query parameters using the same \json notation as the \ivoep responses.
+For simplicity, this document will represent \ivoep query request and response messages using a simplified same \json notation.
 Hopefully this makes it easier for the reader to compare the information in the request and response messages.
+\SectionRef{sec:data-formats} describes more detail about how \ivoep requests and responses should be serialised in HTTP requests.
+
+There is no absolute requirement for the URI identifiers to be resolvable into a resource.
+However providing a resolvable resource at the URI location is an ideal way to communicate information about the Task and Service types to others outside the local community. 
+
+\section{Type identifiers}
+\label{sec:type-identifiers}
+The \ivoep service specification does not define a fixed list of Task and Service types. 
+The intention is that the Task and Service types will be developed organically by communities based on their science use cases.
+\\
+In order to support this grass-root model, the \ivoep specification recomends using resolvable Uniform Resource Identifier (URI)\footurl{https://en.wikipedia.org/wiki/Uniform_Resource_Identifier} identifiers to refer to Task and Service types.
+\\
+The choice of schema and format for the type URIs is left to the individual communities, the only requirement is that they be globally unique.
+
+For readability this document will use a simplified URI scheme to represent the Task and Service type identifiers.
+\begin{lstlisting}[]
+    tasktype = uri://jupyter-notebook
+\end{lstlisting}
+
+For a real-world deployment, the easiest way of ensuring global uniqueness is to use a HTTP URL that points to a location controlled by the community.
+\begin{lstlisting}[]
+    tasktype = http://purl.escape.eu/types/jupyter-notebook
+\end{lstlisting}
+Alternatively one of the established resolvable URI registration schemes may be used, such as the DOI scheme or IVOA registry.
+\begin{lstlisting}[]
+    tasktype = doi://########/jupyter-notebook
+\end{lstlisting}
+\begin{lstlisting}[]
+    tasktype = ivo://########/jupyter-notebook
+\end{lstlisting}
+
 
 \section{Notebook services}
 \label{sec:notebook-services}
 The following sections describe different types of notebook Task, including a generic \jupyterhub Service, a \binderhub Service and an \escape \esap notebook Service, and finally a \zeppelin notebook Service that supports multiple languages including \pyspark. 
 
 \subsection{Jupyter notebook}
-\label{sec:jupyter-notebook}
+\label{sec:uri://jupyter-notebook}
 Replicating the simplest use case outlined above, where the name of the Task type matches the type that the Service implements, the client can call the \ivoep interface with a single parameter, \codeword{tasktype}, representing the type of Task the client is asking about.
 \begin{lstlisting}[]
-    HTTP GET /accepts?tasktype=jupyter-notebook
+    HTTP GET /accepts?tasktype=uri://jupyter-notebook
 \end{lstlisting}
 
-If the service is not able to accept \codeword{jupyter-notebook} Tasks, then it can simply reply with \json response containing a \codeword{reponseword} of \codeword{NO}.
+If the service is not able to accept \codeword{uri://jupyter-notebook} Tasks, then it can simply reply with \json response containing a \codeword{reponseword} of \codeword{NO}.
 \begin{lstlisting}[language=json]
     {
     "reponseword": "NO"
     }
 \end{lstlisting}
 
-If the service can accept \codeword{jupyter-notebook} Tasks then it should reply with a simple \json response containing a \codeword{reponseword} of \codeword{YES} along with details of how to execute the Task.
+If the service can accept \codeword{uri://jupyter-notebook} Tasks then it should reply with a simple \json response containing a \codeword{reponseword} of \codeword{YES} along with details of how to execute the Task.
 \begin{lstlisting}[language=json]
     {
     "reponseword": "YES",
-    "servicetype": "jupyter-hub",
+    "servicetype": "uri://jupyter-hub",
     "serviceinfo": {
         "endpoint": "http://jupyter.example.org/"
         }
@@ -199,37 +229,37 @@ If the service can accept \codeword{jupyter-notebook} Tasks then it should reply
 \end{lstlisting}
 The \codeword{servicetype} value tells the client what kind of service is available, and the \codeword{serviceinfo} element provides details of how to connect to it.
 
-In this example, \codeword{tasktype=jupyter-notebook} in the request applies to a generic \jupyter notebook, as defined by the \jupyter\footurl{https://jupyter.org/} project. In the response, \codeword{servicetype=jupyter-hub} refers to a \jupyterhub service, as defined by the \jupyter project.
+In this example, \codeword{tasktype=uri://jupyter-notebook} in the request applies to a generic \jupyter notebook, as defined by the \jupyter\footurl{https://jupyter.org/} project. In the response, \codeword{servicetype=uri://jupyter-hub} refers to a \jupyterhub service, as defined by the \jupyter project.
 
 In order to run a notebook in a \jupyterhub Service, a client would need to know the endpoint URL of the Service, which is provided in the \codeword{serviceinfo.endpoint} element of the response. The client can use this endpoint URL to pass the notebook to the \jupyterhub service and launch the Task.
 
 \subsection{Binder notebook}
-\label{sec:binder-notebook}
+\label{sec:uri://binder-notebook}
 It is also possible to run a generic \jupyter notebook in a \binderhub service provided by the Binder\footurl{https://binderhub.readthedocs.io/} project.
-In which case, given the same request to run a \codeword{jupyter-notebook} Task.
+In which case, given the same request to run a \codeword{uri://jupyter-notebook} Task.
 \begin{lstlisting}[]
-    HTTP GET /accepts?tasktype=jupyter-notebook
+    HTTP GET /accepts?tasktype=uri://jupyter-notebook
 \end{lstlisting}
 A \binderhub service would also reply with a positive response.
 \begin{lstlisting}[language=json]
     {
     "reponseword": "YES",
-    "servicetype": "binder-hub",
+    "servicetype": "uri://binder-hub",
     "serviceinfo": {
         "endpoint": "http://binder.example.org/"
         }
     }
 \end{lstlisting}
-The response from the \binderhub Service is similar to the response from the \jupyterhub Service, but the meaning is slightly different. Setting the \codeword{servicetype} to \codeword{jupyter-hub} or \codeword{binder-hub} in the response, tells the client what kind of Service to expect at the endpoint URL. It is then up to the client to decide how to send the details of the notebook to the Service based on the service type.
+The response from the \binderhub Service is similar to the response from the \jupyterhub Service, but the meaning is slightly different. Setting the \codeword{servicetype} to \codeword{uri://jupyter-hub} or \codeword{uri://binder-hub} in the response, tells the client what kind of Service to expect at the endpoint URL. It is then up to the client to decide how to send the details of the notebook to the Service based on the service type.
 
 A \binderhub service can also handle a more complex Task than just a generic \jupyter notebook. If the notebook comes as part of a git repository that contains additional information about the dependencies or environment the Task requires, such as \codeword{requirements.txt} or \codeword{environment.yml}, then a \binderhub service can use this information to build a new \docker container based on the requirements and deploy it in the \binderhub service.
 
-In order to check if a Service accepts this more complex type of Task, the client would set the \codeword{tasktype} request parameter to \codeword{binder-notebook}.
+In order to check if a Service accepts this more complex type of Task, the client would set the \codeword{tasktype} request parameter to \codeword{uri://binder-notebook}.
 \begin{lstlisting}[]
-    HTTP GET /accepts?tasktype=binder-notebook
+    HTTP GET /accepts?tasktype=uri://binder-notebook
 \end{lstlisting}
 
-A generic \jupyterhub services would not be able to accept a \codeword{binder-notebook} Task, so it would reply with a \json response containing a \codeword{reponseword} of \codeword{NO}.
+A generic \jupyterhub service would not be able to accept a \codeword{uri://binder-notebook} Task, so it would reply with a \json response containing a \codeword{reponseword} of \codeword{NO}.
 
 \begin{lstlisting}[language=json]
     {
@@ -237,11 +267,11 @@ A generic \jupyterhub services would not be able to accept a \codeword{binder-no
     }
 \end{lstlisting}
 
-A \binderhub service that can accept a \codeword{binder-notebook} Task would reply with a positive response, with the \codeword{servicetype} set to \codeword{binder-hub} and the \codeword{serviceinfo.endpoint} pointing to \binderhub service endpoint.
+A \binderhub service that can accept a \codeword{uri://binder-notebook} Task would reply with a positive response, with the \codeword{servicetype} set to \codeword{uri://binder-hub} and the \codeword{serviceinfo.endpoint} pointing to \binderhub service endpoint.
 \begin{lstlisting}[language=json]
     {
     "reponseword": "YES",
-    "servicetype": "binder-hub",
+    "servicetype": "uri://binder-hub",
     "serviceinfo": {
         "endpoint": "http://binder.example.org/"
         }
@@ -251,14 +281,14 @@ A \binderhub service that can accept a \codeword{binder-notebook} Task would rep
 Given the \codeword{servicetype} and \codeword{serviceinfo.endpoint} elements in the response, the client now has enough information to pass launch the Task by passing a reference to git repository to the \binderhub service.
 
 \subsection{ESAP notebook}
-\label{sec:esap-notebook}
+\label{sec:uri://esap-notebook}
 In terms of the \escape project, there may be additional components beyond simply adding the required software dependencies. If a notebook requires access to data in the \escape \datalake, then for the \textit{"DataLake as a Service"} to work correctly, the notebook needs to be run on a compute platform that is co-located with a Rucio Storage Element (RSE) 
 \footurl{https://rucio.readthedocs.io/en/latest/overview_Rucio_Storage_Element.html} that is part of the \escape \datalake, and the mechanism used to launch the Task needs to pass the appropriate authentication tokens into the notebook environment to enable it to access the \datalake.
 
-If we define a new Task type, \codeword{esap-notebook}, which refers to a notebook Task defined by the \escape ESAP project. Then an \ivoep service client can use this to check if a Service supports this environment.
+If we define a new Task type, \codeword{uri://esap-notebook}, which refers to a notebook Task defined by the \escape ESAP project. Then an \ivoep service client can use this to check if a Service supports this environment.
 
 \begin{lstlisting}[]
-    HTTP GET /accepts?tasktype=esap-notebook
+    HTTP GET /accepts?tasktype=uri://esap-notebook
 \end{lstlisting}
 
 In this case, the generic \jupyterhub and \binderhub Services would not understand the new Task type, and so would reply with a negative response.
@@ -271,25 +301,25 @@ A Service deployment that does understand this new Task type, and can provide ac
 \begin{lstlisting}[language=json]
     {
     "reponseword": "YES",
-    "servicetype": "binder-hub",
+    "servicetype": "uri://binder-hub",
     "serviceinfo": {
         "endpoint": "http://binder.example.eu/"
         }
     }
 \end{lstlisting}
-Note that the Service type in the response is still \codeword{binder-hub}. This means that the \webservice interface that the client interacts with is the same as the generic \binderhub.
+Note that the Service type in the response is still \codeword{uri://binder-hub}. This means that the \webservice interface that the client interacts with is the same as the generic \binderhub.
 The difference with this Service instance is that it is deployed within the \escape network and is capable of providing access to the \escape \datalake.
-Which means that in addition to being able to run generic \codeword{jupyter-notebook} and \codeword{binder-notebook} Tasks, this Service is also capable of understanding and executing a \codeword{esap-notebook} Tasks.
+Which means that in addition to being able to run generic \codeword{uri://jupyter-notebook} and \codeword{uri://binder-notebook} Tasks, this Service is also capable of understanding and executing a \codeword{uri://esap-notebook} Tasks.
 
 \subsection{Zeppelin notebook}
-\label{sec:zeppelin-notebook}
+\label{sec:uri://zeppelin-notebook}
 \apache \zeppelin \footurl{https://zeppelin.apache.org/} is a browser based notebook platform that provides a similar user experience and functionality to the \jupyter notebook platforms.
 However, the technical details of the notebook format and \webservice API are different, which means that the notebook Tasks are not equivalent.
 
-The \ivoep API provides a common interface to enable a client to ask questions about this different type of notebook Service by setting the \codeword{tasktype} parameter to \codeword{zeppelin-notebook}.
+The \ivoep API provides a common interface to enable a client to ask questions about this different type of notebook Service by setting the \codeword{tasktype} parameter to \codeword{uri://zeppelin-notebook}.
 
 \begin{lstlisting}[]
-    HTTP GET /accepts?tasktype=zeppelin-notebook
+    HTTP GET /accepts?tasktype=uri://zeppelin-notebook
 \end{lstlisting}
 
 \ivoep services that represent \jupyterhub and \binderhub Services would not understand the \codeword{tasktype} and would simply reply with a negative response.
@@ -303,7 +333,7 @@ An \ivoep services that represented a \zeppelin Service would reply with a posit
 \begin{lstlisting}[language=json]
     {
     "reponseword": "YES",
-    "servicetype": "zeppelin-service",
+    "servicetype": "uri://zeppelin-service",
     "serviceinfo": {
         "endpoint": "http://zeppelin.aglais.uk/"
         }
@@ -315,10 +345,10 @@ Given the \codeword{servicetype} and \codeword{serviceinfo.endpoint} elements in
 \subsection{PySpark notebook}
 \label{sec:pyspark-notebook}
 
-The \zeppelin platform includes interpreters for several different programming languages, and a \zeppelin notebook can include multiple languages within a single notebook.
+The \zeppelin platform includes interpreters for several different programming languages, and can support multiple languages within a single notebook.
 
 An example of this is the \pyspark \footurl{http://spark.apache.org/docs/latest/api/python/} \python API that enables users to write \python code that performs data analysis using a \spark cluster.
-If a \zeppelin platform has access to a \spark cluster, then it should be able to handle notebooks that contain both standard \python and \pyspark elements in the same notebook.
+If a \zeppelin platform has access to a \spark cluster, then it will be able to handle notebooks that contain both standard \python and \pyspark elements in the same notebook.
 
 If we follow the same pattern as we did for the \jupyter notebooks, then we could define another Task type, \codeword{zeppelin-pyspark-notebook}, to describe \zeppelin notebooks that include \pyspark code in them.
 However, as a \zeppelin notebook can include more than one language within a single notebook, the list of Task types would become overly complex if we tried to handle all the possible combinations.
@@ -328,7 +358,7 @@ A better solution would be to add a second parameter to the \codeword{accepts} r
 A \json representation of an \codeword{accepts} query for a \zeppelin notebook Task that includes \markdown\footurl{https://daringfireball.net/projects/markdown/}, \python and \pyspark elements would be as follows:
 \begin{lstlisting}[language=json]
     {
-    "tasktype": "zeppelin-notebook",
+    "tasktype": "uri://zeppelin-notebook",
     "taskinfo": {
         "languages": [
             "md",
@@ -341,14 +371,14 @@ A \json representation of an \codeword{accepts} query for a \zeppelin notebook T
 
 The same query serialised as a HTTP GET request would be:
 \begin{lstlisting}[]
-    HTTP GET /accepts?tasktype=zeppelin-notebook
+    HTTP GET /accepts?tasktype=uri://zeppelin-notebook
         &taskinfo.languages={md,python,pyspark}
 \end{lstlisting}
 
 In this example, we have a \zeppelin notebook task that includes a list of three languages that are used in the notebook.
 \begin{lstlisting}[language=json]
     {
-    "tasktype": "zeppelin-notebook",
+    "tasktype": "uri://zeppelin-notebook",
     "taskinfo": {
         "languages": [
             "md",
@@ -359,11 +389,11 @@ In this example, we have a \zeppelin notebook task that includes a list of three
     }
 \end{lstlisting}
 
-An \ivoep service that represents a \zeppelin Service that can support all three languages would reply with a positive response. In addition, the \codeword{servivceinfo} element for the \codeword{zeppelin-service} could contain a list of the languages it supports.
+An \ivoep service that represents a \zeppelin Service that can support all three languages would reply with a positive response. In addition, the \codeword{servivceinfo} element for the \codeword{uri://zeppelin-service} could contain a list of the languages it supports.
 \begin{lstlisting}[language=json]
     {
     "reponseword": "YES",
-    "servicetype": "zeppelin-service",
+    "servicetype": "uri://zeppelin-service",
     "serviceinfo": {
         "endpoint": "http://zeppelin.aglais.uk/",
         "languages": [
@@ -378,7 +408,7 @@ An \ivoep service that represents a \zeppelin Service that can support all three
 The \ivoep service specification defines the order in which the request elements are processed.
 The first step is to check the \codeword{tasktype}. If the target Service does not understand the \codeword{tasktype}, then the \ivoep service should simply ignore the rest of the request and reply with a negative response.
 
-An \ivoep service that represents a \jupyterhub or \binderhub Service would not recognise the \codeword{zeppelin-service} \codeword{tasktype}, and so would skip the \codeword{taskinfo} block and simply reply with \codeword{NO}.
+An \ivoep service that represents a \jupyterhub or \binderhub Service would not recognise \codeword{uri://zeppelin-service} as a valid \codeword{tasktype}, and so would skip the \codeword{taskinfo} block and simply reply with \codeword{NO}.
 \begin{lstlisting}[language=json]
     {
     "reponseword": "NO"
@@ -386,7 +416,7 @@ An \ivoep service that represents a \jupyterhub or \binderhub Service would not 
 \end{lstlisting}
 
 Defining the parsing sequence in this way means that the content of the \codeword{taskinfo} element can be specific to each Task type.
-In this example, if the \ivoep service recognises and understands the \codeword{zeppelin-service} \codeword{tasktype}, then it will know to expect a list of \codeword{languages} in the \codeword{taskinfo} element.
+In this example, if the \ivoep service recognises and understands the \codeword{uri://zeppelin-service} \codeword{tasktype}, then it will know to expect a list of \codeword{languages} in the \codeword{taskinfo} element.
 
 An \codeword{accepts} query for a different \codeword{tasktype} would have different, type specific, content in the \codeword{taskinfo} element.
 
@@ -395,12 +425,12 @@ An \codeword{accepts} query for a different \codeword{tasktype} would have diffe
 The following sections describe different types of container execution Services. Starting with the basic \docker container and \dockercompose Services described in the \ivoa \uwsce[cite] note, and an \ivoep service that represents a \portainer Service deployment.
 
 \subsection{Docker UWS}
-\label{sec:docker-uws}
+\label{sec:uri://docker-uws}
 The \uwsce[cite] note describes a basic \docker container execution Service that uses the \ivoa \uws \webservice interface to manage container execution Tasks.
 
 The simplest \ivoep implementation for a basic \uwsce service could just check the \codeword{tasktype} parameter to answer the question \textit{"Can I run a Docker container here?"}.
 \begin{lstlisting}[]
-    HTTP GET /accepts?tasktype=docker-container
+    HTTP GET /accepts?tasktype=uri://docker-container
 \end{lstlisting}
 \ivoep services that represent Services that can execute \docker containers would reply with \codeword{YES}, and \ivoep services that do not support \docker containers would reply with \codeword{NO}.
 
@@ -409,23 +439,23 @@ For example a \uwsce Service may only accept containers from a white list of all
 
 In this situation, the question changes from \textit{"Can I run \textbf{a} Docker container here?"} to \textit{"Can I run \textbf{this} Docker container here?"}, and in order to answer this question the \ivoep service needs to see the container image to check that it meets the acceptance criteria.
 
-Following the pattern outlined in the previous section, the \ivoep request to ask this question would start with the \codeword{tasktype} parameter set to \codeword{docker-container}, followed by the Task specific content in the \codeword{taskinfo} element, containing the fully qualified name of the container image, for example \codeword{docker.escape.eu/example:1.0}.
+Following the pattern outlined in the previous section, the \ivoep request to ask this question would start with the \codeword{tasktype} parameter set to \codeword{uri://docker-container}, followed by the Task specific content in the \codeword{taskinfo} element, containing the fully qualified name of the container image, for example \codeword{docker.io/example:1.0}.
 \begin{lstlisting}[language=json]
     {
-    "tasktype": "docker-container",
+    "tasktype": "uri://docker-container",
     "taskinfo": {
-        "image": "docker.escape.eu/example:1.0"
+        "image": "docker.io/example:1.0"
         }
     }
 \end{lstlisting}
 
 The \ivoep service can then compare the image name with an internal white-list of accepted images, or it could download and inspect the image to verify that it is derived from the correct base image.
 
-Assuming the container image meets the acceptance criteria, the \ivoep service would reply with a positive response, with the \codeword{servicetype} set to \codeword{docker-uws} to indicate the type of Service, and the \codeword{serviceinfo} would contain the endpoint URL to access the service.
+Assuming the container image meets the acceptance criteria, the \ivoep service would reply with a positive response, with the \codeword{servicetype} set to \codeword{uri://docker-uws} to indicate the type of Service, and the \codeword{serviceinfo} would contain the endpoint URL to access the service.
 \begin{lstlisting}[language=json]
     {
     "reponseword": "YES",
-    "servicetype": "docker-uws",
+    "servicetype": "uri://docker-uws",
     "serviceinfo": {
         "endpoint": "http://example.org/dkuws",
         }
@@ -433,13 +463,13 @@ Assuming the container image meets the acceptance criteria, the \ivoep service w
 \end{lstlisting}
 
 \subsection{Docker compose}
-\label{sec:docker-compose}
+\label{sec:uri://docker-compose}
 
 In addition to the basic \docker container execution Service, the \uwsce[cite] note describes a \dockercompose Service that handles \dockercompose Tasks as \uws jobs.
 
-Again, the simplest \ivoep implementation could just check the \codeword{tasktype} parameter to answer the question \textit{"Can I run a docker-compose Task here?"}.
+Again, the simplest \ivoep implementation could just check the \codeword{tasktype} parameter to answer the question \textit{"Can I run a uri://docker-compose Task here?"}.
 \begin{lstlisting}[]
-    HTTP GET /accepts?tasktype=docker-compose
+    HTTP GET /accepts?tasktype=uri://docker-compose
 \end{lstlisting}
 \ivoep services can execute \dockercompose Tasks would reply with \codeword{YES}, and \ivoep services that don't would reply with \codeword{NO}.
 
@@ -448,7 +478,7 @@ However, a more realistic scenario would be for the \uwsce Service to apply some
 One way to enable this would be for the client to send a URL that points to the location of the \dockercompose file.
 \begin{lstlisting}[language=json]
     {
-    "tasktype": "docker-compose",
+    "tasktype": "uri://docker-compose",
     "taskinfo": {
         "composefile": "https://edin.ac/3jqocuV.yml"
         }
@@ -456,7 +486,7 @@ One way to enable this would be for the client to send a URL that points to the 
 \end{lstlisting}
 However, this requires a copy of \dockercompose file to be publicly accessible on the internet, which may not always be possibly. A better alternative would be to use a HTTP \codeword{multipart/form-data POST} \footurl{https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST} request to include the content of the \dockercompose file in the request body.
 
-\textbf{TODO} develop a better example, using a containerized version of the Vollt TAP service\footurl{https://github.com/gmantele/vollt}. 
+\textbf{TODO} develop a better example using a containerized version of the Vollt TAP service\footurl{https://github.com/gmantele/vollt}. 
 
 \begin{lstlisting}[]
     POST /accept HTTP/1.1
@@ -466,7 +496,7 @@ However, this requires a copy of \dockercompose file to be publicly accessible o
     --boundary
     Content-Disposition: form-data; name="tasktype"
 
-    docker-compose
+    uri://docker-compose
     --boundary
     Content-Disposition: form-data; name="taskinfo.composefile"; filename="compose.yml"
     Content-Type: text/yaml
@@ -478,16 +508,16 @@ However, this requires a copy of \dockercompose file to be publicly accessible o
     services:
         database:
             image:
-               "firethorn/postgres:${buildtag:-latest}"
+               "example/postgres:9.2"
             networks:
                 - internal
             environment:
-                POSTGRES_DB:       "${metadata}"
-                POSTGRES_USER:     "${metauser}"
-                POSTGRES_PASSWORD: "${metapass}"
+                POSTGRES_DB:       "${database}"
+                POSTGRES_USER:     "${usernam}"
+                POSTGRES_PASSWORD: "${password}"
         webapp:
             image:
-               "firethorn/firethorn:${buildtag:-latest}"
+               "example/webapp:1.1"
             networks:
                 - internal
                 - external
@@ -496,15 +526,15 @@ However, this requires a copy of \dockercompose file to be publicly accessible o
     --boundary--
 \end{lstlisting}
 
-This example sets the \codeword{tasktype} to \codeword{docker-compose} in the first block of \codeword{form data}, and then includes the content of the \dockercompose file in the second block.
+This example sets the \codeword{tasktype} to \codeword{uri://docker-compose} in the first block of \codeword{form data}, and then includes the content of the \dockercompose file in the second block.
 
-Note that the only part required by the \ivoep specification is the initial \codeword{tasktype} element set to \codeword{docker-compose}. After that, the rest of the content of the message is defined by the specification for the \uwsce application and the \ivoep extension for handling \dockercompose Tasks.
+Note that the only part required by the \ivoep specification is the initial \codeword{tasktype} element set to \codeword{uri://docker-compose}. After that, the rest of the content of the message is defined by the specification for the \uwsce application and the \ivoep extension for handling \dockercompose Tasks.
 
-\textbf{TODO} No, but response, offering a template compose file ?
+\textbf{TODO} "No, but maybe" response offering a template compose file ?
 
-\subsection{Portainer}
-\label{sec:portainer}
-\portainer is a commercial platform that \textit{"enables centralized configuration, management and security of Kubernetes and Docker environments, allowing you to deliver ‘Containers-as-a-Service’ to your users quickly, easily and securely."}\footurl{https://www.portainer.io/}
+\subsection{Portainer service}
+\label{sec:portainer-service}
+\portainer\footurl{https://www.portainer.io/} is a commercial platform that \textit{"enables centralized configuration, management and security of Kubernetes and Docker environments, allowing you to deliver ‘Containers-as-a-Service’ to your users quickly, easily and securely."}
 
 The \ivoep design pattern supports a number different of ways to integrate a \portainer service into the IVOA ecosystem.
 \begin{itemize}
@@ -513,17 +543,16 @@ The \ivoep design pattern supports a number different of ways to integrate a \po
     \item Exposing the \portainer service directly via an \ivoep interface
 \end{itemize}
 
-In the first two cases, the \uwsce interface acts as a proxy for the \portainer service. Initialising and running the \docker or \dockercompose Tasks on the \portainer service, and then providing a VO compatible interface that represented the \portainer tasks as \uws jobs.
+In the first two cases, the \uwsce interface acts as a proxy for the \portainer service. Initialising and running the \docker or \dockercompose Tasks on the \portainer service, and providing an IVOA compatible interface that represents the \portainer tasks as \uws jobs.
 
-In the third case, the \ivoep service would provide a registered entrypoint for the 
-\portainer service in the VO ecosystem. 
-The \ivoep service would accept Tasks with \codeword{tasktype} of \codeword{docker-container}, \codeword{docker-compose} and two new types of \codeword{portainer-container} and  \codeword{portainer-compose}.
-The \ivoep service would simply match the \codeword{tasktype} names and return a positive response, with \codeword{servicetype} set to \codeword{portainer}
+In the third case, the \ivoep service would provide a registered entrypoint to represent the \portainer service in the IVOA ecosystem. 
+The \ivoep service would accept Tasks with \codeword{tasktype} of \codeword{uri://docker-container}, \codeword{uri://docker-compose} and two new types of \codeword{uri://portainer-container} and  \codeword{uri://portainer-compose}.
+The \ivoep service would simply match the \codeword{tasktype} names and return a positive response, with \codeword{servicetype} set to \codeword{uri://portainer-service}
 
 \begin{lstlisting}[language=json]
     {
     "reponseword": "YES",
-    "servicetype": "portainer",
+    "servicetype": "uri://portainer-service",
     "serviceinfo": {
         "endpoint": "http://portainer.example.org/",
         }
@@ -531,7 +560,7 @@ The \ivoep service would simply match the \codeword{tasktype} names and return a
 \end{lstlisting}
 
 If a client does not understand how to drive a \portainer service, then it simply ignores this offer and moves on to try another service.
-If a client does understand how to drive a \portainer service, then the \codeword{serviceinfo.endpoint}\ivoep element of the response enables the \portainer client to contact the \portainer service directly.
+If a client does understand how to drive a \portainer service, then the \codeword{serviceinfo.endpoint} element of the response enables the \portainer client to contact the \portainer service directly.
 
 This represents a key design pattern of the \ivoep service. Implementing just enough to provide a standard IVOA interface that can be registered in the IVOA Registry to make a 3rd party service find-able and use-able as part of the IVOA ecosystem, without having to standardise the whole of the 3rd party interface.
 
@@ -546,17 +575,17 @@ interfaces[] element in response
     "reponseword": "YES",
     "interfaces": [
             {
-            "servicetype": "docker-uws",
+            "servicetype": "uri://docker-uws",
             "serviceinfo": {
                 "endpoint": "http://uws.example.org/docker"
             },
             {
-            "servicetype": "compose-uws",
+            "servicetype": "uri://compose-uws",
             "serviceinfo": {
                 "endpoint": "http://uws.example.org/compose"
             },
             {
-            "servicetype": "portainer",
+            "servicetype": "uri://portainer-service",
             "serviceinfo": {
                 "endpoint": "http://portainer.example.org/"
             }
@@ -642,7 +671,7 @@ However, most computing services will be funded to provide compute resources for
 \\
 If an authenticated identity is provided as part of the \codeword{/accepts}, then the EP service can use this identity as part of the evaluation criteria.
 \begin{lstlisting}[]
-    HTTP GET /accepts?tasktype=docker-container
+    HTTP GET /accepts?tasktype=uri://docker-container
     Authorization: Bearer SlAV32hkKG
 \end{lstlisting}
 
@@ -651,7 +680,7 @@ response as normal.
 \begin{lstlisting}[language=json]
     {
     "reponseword": "YES",
-    "servicetype": "portainer",
+    "servicetype": "uri://portainer-service",
     "serviceinfo": {
         "endpoint": "http://portainer.example.org/",
         }
