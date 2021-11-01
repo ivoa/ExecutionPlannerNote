@@ -165,6 +165,10 @@ The \ivoep interface defines a simple stateless HTTP interface that supports eit
 The following sections use a series of example Task types to illustrate how the \ivoep service interface works.
 In all of these cases, the \ivoep service interface provides a common method to query Services about their capabilities.   
 
+\SectionRef{sec:data-formats} describes how \ivoep requests and responses should be serialised in HTTP requests.
+For simplicity, this document will represent complex \ivoep query parameters using the same \json notation as the \ivoep responses.
+Hopefully this makes it easier for the reader to compare the information in the request and response messages.
+
 \section{Notebook services}
 \label{sec:notebook-services}
 The following sections describe different types of notebook Task, including a generic \jupyterhub Service, a \binderhub Service and an \escape \esap notebook Service, and finally a \zeppelin notebook Service that supports multiple languages including \pyspark. 
@@ -340,8 +344,6 @@ The same query serialised as a HTTP GET request would be:
     HTTP GET /accepts?tasktype=zeppelin-notebook
         &taskinfo.languages={md,python,pyspark}
 \end{lstlisting}
-
-Note - the full \ivoep specification defines how the \ivoep query parameters should be serialised in HTTP GET or POST requests. For simplicity, this document will represent the complex \ivoep query parameters using the same \json notation as the \ivoep responses. Hopefully this makes it easier for the reader to compare the information in the request and response messages.
 
 In this example, we have a \zeppelin notebook task that includes a list of three languages that are used in the notebook.
 \begin{lstlisting}[language=json]
