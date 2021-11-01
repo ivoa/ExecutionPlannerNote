@@ -128,7 +128,7 @@ This document derives from discussions among the Grid and Web Services working g
 This document has been developed with support from the UK Science and Technology Facilities Council (STFC), from the Italian National Institute for Astrophysics (INAF) and from the European Commission's Research and Innovation Program Horizon 2020 under the project ESCAPE (Grant n.824064).
 
 \section*{Conformance-related definitions}
-\label{sec:conformance-related definitions}
+\label{sec:conformance-related-definitions}
 The words ``MUST'', ``SHALL'', ``SHOULD'', ``MAY'', ``RECOMMENDED'', and ``OPTIONAL'' (in upper or lower case) used in this document are to be interpreted as described in IETF standard, \citep{std:RFC2119}.
 
 The \emph{Virtual Observatory (VO)} is general term for a collection of federated resources that can be used
@@ -534,7 +534,7 @@ If a client does understand how to drive a \portainer service, then the \codewor
 This represents a key design pattern of the \ivoep service. Implementing just enough to provide a standard IVOA interface that can be registered in the IVOA Registry to make a 3rd party service find-able and use-able as part of the IVOA ecosystem, without having to standardise the whole of the 3rd party interface.
 
 \subsection{Multiple interfaces}
-\label{sec:multi-interface}
+\label{sec:multiple-interfaces}
 
 Single Service offering multiple interfaces.
 interfaces[] element in response
@@ -569,6 +569,7 @@ use one of the simpler UWS interfaces to run the Docker container Task.
 
 
 \section{Computing resources}
+\label{sec:computing-resources}
 
 Request/response section describing the required and available resources.
 \\
@@ -602,22 +603,26 @@ Simple NO. It may also include a resources element with available resources and 
 ISO 8601 duration
 
 \section{Data access}
+\label{sec:data-access}
 
 Data access requirements ..
 
 Data access vocabulary ..
 
 \subsection{VOSpace}
+\label{sec:data-access-vospace}
 
 Example reference to data in VOSpace (INAF archive?).
 Identity and auth ..
 
 \subsection{Rucio}
+\label{sec:data-access-rucio}
 
 Example reference to data in Rucio (ESCAPE DataLake?).
 Identity and auth ..
 
-\subsection{S3}
+\subsection{Amazon S3}
+\label{sec:data-access-amazons3}
 
 Example reference to data in S3 (internal and external).
 Examples, Amazon, DigitalOcean, Openstack, STFC Echo.
@@ -625,6 +630,7 @@ Identity and auth ..
 
 
 \section{Authentication}
+\label{sec:authentication}
 Different Service instances may have different criteria for who they will allow to execute Tasks on their Service.
 
 Some services, such as the public Service provided by the BinderHub Federation may be free and open to the public to use [1].
@@ -673,7 +679,10 @@ Or it may provide additional information about the reason why.
 \end{lstlisting}
 
 \section{Deployment and discovery}
+\label{sec:deployment-discovery}
+
 \subsection{Service deployment}
+\label{sec:service-deployment}
 The \ivoep interface is designed to work both within the context of the IVOA community, or as apart of a separate domain outside the IVOA, such as the ESCAPE ESAP community.
 \\
 In both situations, there would typically be one\ivoep service associated with each platform that provides computing resources to the community.
@@ -688,6 +697,7 @@ The \ivoep service itself would be hosted and maintained by a member of the ESCA
 This distributed micro-service architecture enables communities to build up a network of \ivoep services that describe both internal and external computing resources in an interoperable way.
 \\
 \subsection{Service discovery}
+\label{sec:service-discovery}
 The \ivoep interface is designed to be compatible with using the IVOA registry for service discovery.
 The \ivoep specification defines a VOResource metadata extension for describing \ivoep services and their capabilities.
 \\
@@ -698,6 +708,7 @@ For example, a project like ESCAPE may choose to deploy their own service discov
 This can be as simple as a database table maintained inside the an ESAP portal that lists the \ivoep services associated with the computing platforms available to that community.
 
 \section{Data formats}
+\label{sec:data-formats}
 Default data format for \ivoep services is to use 
 \yaml for data inputs sent via POST messages and the default response format is \json for outputs.
 This pattern of using different formats for the request and response data is used by a number of \webservice interfaces, for example the Kubernetes \codeword{kubectl} control application.
@@ -705,6 +716,7 @@ This pattern of using different formats for the request and response data is use
 The reasoning behind this pattern is that \yaml is the best format for storing human edited configurations, such as the resource requirements and metadata. Whereas \json is best format for handling and parsing \webservice responses. 
 
 \subsection{Request formats}
+\label{sec:request-formats}
 The \ivoep interface can accept both YAML and JSON documents in the elements of a HTTP multipart POST messages. The client should specify the format for each element in the HTTP POST message.
 \begin{lstlisting}[]
     POST /accept HTTP/1.1
@@ -735,17 +747,9 @@ The \ivoep interface can accept both YAML and JSON documents in the elements of 
 Where there is a preference for a particular format, e.g. to match the format used by a 3rd party application, it should be declared in documentation for that particular \ivoep application.
 
 \subsection{Response formats}
+\label{sec:response-formats}
 The \ivoep interface can generate \json, \yaml or \xml response formats.
 A client can specify the preferred format using the HTTP Accepts header.
-
-
-
-
-
-
-
-
-
  
 
 \bibliography{ivoatex/ivoabib,ivoatex/docrepo}
