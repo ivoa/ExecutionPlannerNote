@@ -577,82 +577,13 @@ use one of the simpler UWS interfaces to run the Docker container Task.
 \section{Authentication}
 Different Service instances may have different criteria for who they will allow to execute Tasks on their Service.
 
-\subsection{Public access}
-Some services, such as the public Service provided 
-by the BinderHub Federation may be free and open to the public to use [1].
+Some services, such as the public Service provided by the BinderHub Federation may be free and open to the public to use [1].
 \\
 An \ivoep service that represents a public access Service like this may accept any HTTP request, without authentication, and would evaluate the Task criteria without reference to a user identity.
 
-\subsection{Protected access}
 However, most computing services will be funded to provide compute resources for specific communities, and will require some level of user authentication to control access to their resources.
-\\
-An \ivoep service for a protected Service may use a variety of authentication methods to determine the identity of the client request. In this situation, the content and meaning of the responses from the \ivoep service are as follows:
 
-\subsubsection{Anonymous access}
-If the client is not authenticated, and the \ivoep service allows anonymous requests, then it would evaluate the Task criteria without reference to the client identity.
-
-\subsubsection{Authentication required}
-If the client is not authenticated, and the \ivoep service requires authentication, then it may follow the OpenID Connect\footurl{https://openid.net/connect/} (OIDC) sequence, redirecting the client to an appropriate OIDC authentication service, such as the ESCAPE IAM service\footurl{https://github.com/indigo-iam/escape-docs}.
-
-\subsubsection{Not authorised for EP}
-If the client is authenticated, but the identity supplied is not authorized to access the \ivoep service, then the \ivoep service may reply with a HTTP 403 Forbidden response.
-
-\subsubsection{Authorised for EP}
-If the client is authenticated, and the identity supplied is authorized to access the \ivoep service, then the \ivoep service would evaluate the Task criteria based on the authenticated identity.
-
-\subsubsection{Authorised for target Service}
-If the client is authenticated, and identity supplied is authorized to execute a Task on the target Service, then the \ivoep service replies with a positive response based on the Task criteria.
-
-\subsubsection{Not authorised for target Service}
-If the user is authenticated, but the identity supplied is not authorized to execute the Task on the target Service, then the \ivoep service replies with a negative response.
-
-\subsection{Authentication response codes}
-The difference between the different authentication and authorisation responses is subtle but important.
-
-\begin{itemize}
-    \item A HTTP \codeword{403} response means the requesting identity is not allowed to use the \ivoep service. They are not allowed to ask the question.
-    \item A HTTP \codeword{200} \codeword{OK} response containing an \ivoep \codeword{NO} response means the requesting identity is allowed to ask, but the reply is \codeword{NO}, they are not able to run the Task.
-\end{itemize}
-
-In the simplest case an \ivoep service may just reply with a \codeword{NO}. This simply says that the requesting identity can't execute the Task on the target Service. It doesn't need to say why.
-\begin{lstlisting}[language=json]
-    {
-    "reponseword": "NO"
-    }
-\end{lstlisting}
-To be more informative, an \ivoep service may supply additional detail in the \codeword{repsonseinfo} element.
-\\
-\\
-An \ivoep \codeword{NO} response containing a \codeword{reponseinfo.reason} with a \codeword{httpcode} of \codeword{401} indicates that the identity supplied with the \ivoep request \textit{"lacks valid authentication credentials for the target resource"} (RFC 7235)\footurl{https://www.rfc-editor.org/rfc/rfc7235.html\#section-3.1}.
-\begin{lstlisting}[language=json]
-    {
-    "reponseword": "NO"
-    "reponseinfo": {
-        "reasons": [
-                {
-                "httpcode": 401,
-                "text": "Not authenticated"
-                }
-            ]
-        }
-    }
-\end{lstlisting}
-
-An \ivoep \codeword{NO} response containing a \codeword{reponseinfo.reason} with a \codeword{httpcode} of \codeword{403} indicates that the identity supplied with the \ivoep request is not authorised to run the Task on the target Service (RFC 7231)\footurl{https://www.rfc-editor.org/rfc/rfc7231.html\#section-6.5.3}.
-\begin{lstlisting}[language=json]
-    {
-    "reponseword": "NO"
-    "reponseinfo": {
-        "reasons": [
-                {
-                "httpcode": 403,
-                "text": "Not authorised"
-                }
-            ]
-        }
-    }
-\end{lstlisting}
-
+TODO - examples
 
 \section{Computing resources}
 
