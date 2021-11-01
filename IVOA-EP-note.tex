@@ -566,18 +566,22 @@ This represents a key design pattern of the \ivoep service. Implementing just en
 
 \subsection{Multiple interfaces}
 \label{sec:multiple-interfaces}
+A complex service like a full \portainer deployment may be capable of providing multiple methods for running the same Task type.
 
-Single Service offering multiple interfaces.
-interfaces[] element in response
+Given a basic request to execute a \codeword{uri://docker-container} Task.
+\begin{lstlisting}[]
+    HTTP GET /accepts?tasktype=uri://docker-container
+\end{lstlisting}
 
+An \ivoep service that represents the \portainer service may return an array of service interfaces in the response, allowing the client to choose the most appropriate method to use.
 \begin{lstlisting}[language=json]
     {
     "reponseword": "YES",
     "interfaces": [
             {
-            "servicetype": "uri://docker-uws",
+            "servicetype": "uri://portainer-service",
             "serviceinfo": {
-                "endpoint": "http://uws.example.org/docker"
+                "endpoint": "http://portainer.example.org/"
             },
             {
             "servicetype": "uri://compose-uws",
@@ -585,18 +589,27 @@ interfaces[] element in response
                 "endpoint": "http://uws.example.org/compose"
             },
             {
-            "servicetype": "uri://portainer-service",
+            "servicetype": "uri://docker-uws",
             "serviceinfo": {
-                "endpoint": "http://portainer.example.org/"
+                "endpoint": "http://uws.example.org/docker"
             }
         ]
     }
 \end{lstlisting}
 
-If the client understands how to use a Portainer service, then it can choose to use that to run the Docker container Task.
+In this example, the \ivoep service is offering three methods for executing a \codeword{uri://docker-container} Task.
+\begin{itemize}
+    \item The full \portainer service interface.
+    \item A \uwsce interface that accepts can accept the \codeword{uri://docker-container} Task if it is wrapped as a \codeword{uri://docker-compose} Task.
+    \item A \uwsce interface that accepts \codeword{uri://docker-container} Tasks directly.
+\end{itemize}
 
-If the client does not understand how to use a Portainer service, then it can choose to 
-use one of the simpler UWS interfaces to run the Docker container Task.
+The client is free to choose which method is most appropriate to use.
+\begin{itemize}
+    \item If the client understands how to use a \portainer service, then it can use the \codeword{serviceinfo.endpoint} to access the \portainer Service directly.
+    \item If the client understands how to wrap a \codeword{uri://docker-container} as a \codeword{uri://docker-compose} Task, then it may choose to use the \codeword{uri://compose-uws} Service.
+    \item Or the client may choose to simply use the basic \codeword{uri://docker-uws} Service.
+\end{itemize}
 
 
 \section{Computing resources}
