@@ -1,0 +1,35 @@
+%
+% Useful macros for referring to IVOA standards and notes in a consistent style.
+% $Rev: 4639 $
+% $Date: 2017-12-28 21:06:03 +0000 (Thu, 28 Dec 2017) $
+% $URL: https://volute.g-vo.org/svn/trunk/projects/dal/ADQL/ADQL.tex $
+%
+% Example:
+% Use \VOTableSpec to refer to the VOTable standard in your document.
+% The first time this occurs in your document it will be expanded into a full citation:
+%   VOTable specification (Ochsenbein and Taylor et al. (2013))
+% Any subsequent occurrences will be expanded into just the name of the standard:
+%   VOTable specification
+%
+
+\def\definestandard#1#2#3{%
+  \expandafter\def\csname#1\endcsname{%
+    \expandafter\ifx\csname#1cited\endcsname\relax #3 \citep{#2}%
+    \expandafter\def\csname#1cited\endcsname{#1}%
+      \else #3\fi}}
+
+\definestandard{VOArch}       {2010ivoa.rept.1123A} {IVOA Architecture}
+
+\definestandard{UWSSpec}      {2016ivoa.spec.1024H} {UWS specification}
+
+\definestandard{VOTableSpec}  {2013ivoa.spec.0920O} {VOTable specification}
+\definestandard{DALISpec}     {2017ivoa.spec.0517D} {DALI specification}
+\definestandard{VOSISpec}     {2017ivoa.spec.0524G} {VOSI specification}
+\definestandard{VOUnitSpec}   {2014ivoa.spec.0523D} {VOUnits specification}
+
+%
+% Useful macros for referring to figures, sections and appendices in a consistent style.
+\newcommand{\FigureRef}[1]{Figure \ref{#1}}
+\newcommand{\SectionRef}[1]{Section \ref{#1}}
+\newcommand{\SectionSee}[1]{(see Section \ref{#1})}
+\newcommand{\AppendixRef}[1]{Appendix \ref{#1}}
