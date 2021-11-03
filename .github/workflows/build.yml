@@ -1,3 +1,9 @@
+# This file generated from a template file maintained in the ivoatex repository.
+# To create and install it into a project repository, do:
+#    make github-preview
+#    git commit
+#    git push
+#
 name: Check the IVOA document
 
 env:
@@ -22,10 +28,10 @@ jobs:
     - name: Setup dependencies
       run: |
         sudo apt update
-        sudo apt install texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended xsltproc
+        sudo apt install texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended xsltproc latexmk cm-super
       
     - name: Build the document
-      run: make biblio forcetex
+      run: make
       
     - name: Check the output
       run: |
