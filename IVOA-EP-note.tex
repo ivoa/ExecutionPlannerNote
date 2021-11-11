@@ -64,7 +64,7 @@
     numberstyle=\small,
     numbersep=8pt,
     %xleftmargin=\parindent,
-    xrightmargin=1cm,    
+    xrightmargin=1cm,
     showstringspaces=false,
     keepspaces=true,
     breaklines=true,
@@ -101,7 +101,7 @@
       {7}{{{\color{numb}7}}}{1}
       {8}{{{\color{numb}8}}}{1}
       }
-      
+
 \hyphenation{Con-tai-ner-Node}
 
 \title{IVOA Execution Planner - design outline}
@@ -163,18 +163,18 @@ The design of the \ivoep interface aims to address this complexity by using the 
 
 The \ivoep interface defines a simple stateless HTTP interface that supports \codeword{GET} and \codeword{POST} requests.
 The following sections use a series of example Task types to illustrate how the \ivoep service interface works.
-In all of these cases, the \ivoep service interface provides a common method to query Services about their capabilities.   
+In all of these cases, the \ivoep service interface provides a common method to query Services about their capabilities.
 
 For simplicity, this document will represent \ivoep query request and response messages using a simplified same \json notation.
 Hopefully this makes it easier for the reader to compare the information in the request and response messages.
 \SectionRef{sec:data-formats} describes more detail about how \ivoep requests and responses should be serialised in HTTP requests.
 
 There is no absolute requirement for the URI identifiers to be resolvable into a resource.
-However providing a resolvable resource at the URI location is an ideal way to communicate information about the Task and Service types to others outside the local community. 
+However providing a resolvable resource at the URI location is an ideal way to communicate information about the Task and Service types to others outside the local community.
 
 \section{Type identifiers}
 \label{sec:type-identifiers}
-The \ivoep service specification does not define a fixed list of Task and Service types. 
+The \ivoep service specification does not define a fixed list of Task and Service types.
 The intention is that the Task and Service types will be developed organically by communities based on their science use cases.
 \\
 In order to support this grass-root model, the \ivoep specification recomends using resolvable Uniform Resource Identifier (URI)\footurl{https://en.wikipedia.org/wiki/Uniform_Resource_Identifier} identifiers to refer to Task and Service types.
@@ -201,7 +201,7 @@ Alternatively one of the established resolvable URI registration schemes may be 
 
 \section{Notebook services}
 \label{sec:notebook-services}
-The following sections describe different types of notebook Task, including a generic \jupyterhub Service, a \binderhub Service and an \escape \esap notebook Service, and finally a \zeppelin notebook Service that supports multiple languages including \pyspark. 
+The following sections describe different types of notebook Task, including a generic \jupyterhub Service, a \binderhub Service and an \escape \esap notebook Service, and finally a \zeppelin notebook Service that supports multiple languages including \pyspark.
 
 \subsection{Jupyter notebook}
 \label{sec:uri://jupyter-notebook}
@@ -282,7 +282,7 @@ Given the \codeword{servicetype} and \codeword{serviceinfo.endpoint} elements in
 
 \subsection{ESAP notebook}
 \label{sec:uri://esap-notebook}
-In terms of the \escape project, there may be additional components beyond simply adding the required software dependencies. If a notebook requires access to data in the \escape \datalake, then for the \textit{"DataLake as a Service"} to work correctly, the notebook needs to be run on a compute platform that is co-located with a Rucio Storage Element (RSE) 
+In terms of the \escape project, there may be additional components beyond simply adding the required software dependencies. If a notebook requires access to data in the \escape \datalake, then for the \textit{"DataLake as a Service"} to work correctly, the notebook needs to be run on a compute platform that is co-located with a Rucio Storage Element (RSE)
 \footurl{https://rucio.readthedocs.io/en/latest/overview_Rucio_Storage_Element.html} that is part of the \escape \datalake, and the mechanism used to launch the Task needs to pass the appropriate authentication tokens into the notebook environment to enable it to access the \datalake.
 
 If we define a new Task type, \codeword{uri://esap-notebook}, which refers to a notebook Task defined by the \escape ESAP project. Then an \ivoep service client can use this to check if a Service supports this environment.
@@ -486,7 +486,7 @@ One way to enable this would be for the client to send a URL that points to the 
 \end{lstlisting}
 However, this requires a copy of \dockercompose file to be publicly accessible on the internet, which may not always be possibly. A better alternative would be to use a HTTP \codeword{multipart/form-data POST} \footurl{https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST} request to include the content of the \dockercompose file in the request body.
 
-\textbf{TODO} develop a better example using a containerized version of the Vollt TAP service\footurl{https://github.com/gmantele/vollt}. 
+\textbf{TODO} develop a better example using a containerized version of the Vollt TAP service\footurl{https://github.com/gmantele/vollt}.
 
 \begin{lstlisting}[]
     POST /accept HTTP/1.1
@@ -545,7 +545,7 @@ The \ivoep design pattern supports a number different of ways to integrate a \po
 
 In the first two cases, the \uwsce interface acts as a proxy for the \portainer service. Initialising and running the \docker or \dockercompose Tasks on the \portainer service, and providing an IVOA compatible interface that represents the \portainer tasks as \uws jobs.
 
-In the third case, the \ivoep service would provide a registered entrypoint to represent the \portainer service in the IVOA ecosystem. 
+In the third case, the \ivoep service would provide a registered entrypoint to represent the \portainer service in the IVOA ecosystem.
 The \ivoep service would accept Tasks with \codeword{tasktype} of \codeword{uri://docker-container}, \codeword{uri://docker-compose} and two new types of \codeword{uri://portainer-container} and  \codeword{uri://portainer-compose}.
 The \ivoep service would simply match the \codeword{tasktype} names and return a positive response, with \codeword{servicetype} set to \codeword{uri://portainer-service}
 
@@ -753,11 +753,11 @@ This can be as simple as a database table maintained inside the an ESAP portal t
 
 \section{Data formats}
 \label{sec:data-formats}
-Default data format for \ivoep services is to use 
+Default data format for \ivoep services is to use
 \yaml for data inputs sent via POST messages and the default response format is \json for outputs.
 This pattern of using different formats for the request and response data is used by a number of \webservice interfaces, for example the Kubernetes \codeword{kubectl} control application.
 
-The reasoning behind this pattern is that \yaml is the best format for storing human edited configurations, such as the resource requirements and metadata. Whereas \json is best format for handling and parsing \webservice responses. 
+The reasoning behind this pattern is that \yaml is the best format for storing human edited configurations, such as the resource requirements and metadata. Whereas \json is best format for handling and parsing \webservice responses.
 
 \subsection{Request formats}
 \label{sec:request-formats}
@@ -794,7 +794,7 @@ Where there is a preference for a particular format, e.g. to match the format us
 \label{sec:response-formats}
 The \ivoep interface can generate \json, \yaml or \xml response formats.
 A client can specify the preferred format using the HTTP Accepts header.
- 
+
 
 \bibliography{ivoatex/ivoabib,ivoatex/docrepo}
 
