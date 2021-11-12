@@ -6,6 +6,6 @@ IVOA note exploring what the ExecutionPlanner (EP) interface could do.
 This note is intended as an exploration of all the things we might want an EP interface to do.
 Colleages in the community are invited to suggest and describe ideas for functionality.
 
-We will then use this document as a basis for deciding what level of functionality is practical
+This document will be used as a basis for deciding what level of functionality is practical
 or desirable to include in the first version of the IVOA standard.
 
