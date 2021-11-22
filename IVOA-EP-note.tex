@@ -150,7 +150,7 @@ The simplest solution to this problem would be for a central agency to maintain 
 The simplest case is just to match the type of task with the type of Service, using a simple string match.
 
 \begin{verbatim}
-SELECT * FROM services WHERE servicetype = 'binder'
+SELECT * FROM services WHERE servicetype = 'jupyter'
 \end{verbatim}
 
 This works for a small fixed set of Task types with a simple set of acceptance criteria. However as the range and complexity of Task types begins to grow a centralised solution like this becomes harder to maintain.
@@ -168,9 +168,6 @@ In all of these cases, the \ivoep service interface provides a common method to 
 For simplicity, this document will represent \ivoep query request and response messages using a simplified same \json notation.
 Hopefully this makes it easier for the reader to compare the information in the request and response messages.
 \SectionRef{sec:data-formats} describes more detail about how \ivoep requests and responses should be serialised in HTTP requests.
-
-There is no absolute requirement for the URI identifiers to be resolvable into a resource.
-However providing a resolvable resource at the URI location is an ideal way to communicate information about the Task and Service types to others outside the local community.
 
 \section{Type identifiers}
 \label{sec:type-identifiers}
@@ -198,6 +195,8 @@ Alternatively one of the established resolvable URI registration schemes may be 
     tasktype = ivo://########/jupyter-notebook
 \end{lstlisting}
 
+There is no absolute requirement for the URI identifiers to be resolvable into a resource.
+However providing a resolvable resource at the URI location is an ideal way to communicate information about the Task and Service types to others outside the local community.
 
 \section{Notebook services}
 \label{sec:notebook-services}
@@ -250,9 +249,12 @@ A \binderhub service would also reply with a positive response.
         }
     }
 \end{lstlisting}
-The response from the \binderhub Service is similar to the response from the \jupyterhub Service, but the meaning is slightly different. Setting the \codeword{servicetype} to \codeword{uri://jupyter-hub} or \codeword{uri://binder-hub} in the response, tells the client what kind of Service to expect at the endpoint URL. It is then up to the client to decide how to send the details of the notebook to the Service based on the service type.
+The response from the \binderhub Service is similar to the response from the \jupyterhub Service, but the meaning is slightly different.
+Setting the \codeword{servicetype} to \codeword{uri://binder-hub} tells the client what kind of Service to expect at the endpoint URL.
+It is then up to the client to decide how to send the details of the notebook to the Service based on the service type.
 
-A \binderhub service can also handle a more complex Task than just a generic \jupyter notebook. If the notebook comes as part of a git repository that contains additional information about the dependencies or environment the Task requires, such as \codeword{requirements.txt} or \codeword{environment.yml}, then a \binderhub service can use this information to build a new \docker container based on the requirements and deploy it in the \binderhub service.
+A \binderhub service can also handle a more complex Task than just a generic \jupyter notebook.
+If the notebook comes as part of a git repository that contains additional information about the dependencies or environment the Task requires, such as \codeword{requirements.txt} or \codeword{environment.yml}, then a \binderhub service can use this information to build a new \docker container based on the requirements and deploy it in the \binderhub service.
 
 In order to check if a Service accepts this more complex type of Task, the client would set the \codeword{tasktype} request parameter to \codeword{uri://binder-notebook}.
 \begin{lstlisting}[]
@@ -528,9 +530,8 @@ However, this requires a copy of \dockercompose file to be publicly accessible o
 
 This example sets the \codeword{tasktype} to \codeword{uri://docker-compose} in the first block of \codeword{form data}, and then includes the content of the \dockercompose file in the second block.
 
-Note that the only part required by the \ivoep specification is the initial \codeword{tasktype} element set to \codeword{uri://docker-compose}. After that, the rest of the content of the message is defined by the specification for the \uwsce application and the \ivoep extension for handling \dockercompose Tasks.
-
-\textbf{TODO} "No, but maybe" response offering a template compose file ?
+Note that the only part required by the \ivoep specification is the initial \codeword{tasktype} element set to \codeword{uri://docker-compose}.
+After that, the rest of the content of the message is defined by the specification for the \uwsce application and the \ivoep extension for handling \dockercompose Tasks.
 
 \subsection{Portainer service}
 \label{sec:portainer-service}
