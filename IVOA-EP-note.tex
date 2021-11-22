@@ -44,6 +44,8 @@
 \newcommand{\codeword}[1] {\texttt{#1}}
 \newcommand{\footurl}[1] {\footnote{\url{#1}}}
 
+\newcommand{\dataset} {dataset\xspace}
+
 \usepackage{listings}
 \usepackage{xcolor}
 
@@ -391,7 +393,8 @@ In this example, we have a \zeppelin notebook task that includes a list of three
     }
 \end{lstlisting}
 
-An \ivoep service that represents a \zeppelin Service that can support all three languages would reply with a positive response. In addition, the \codeword{servivceinfo} element for the \codeword{uri://zeppelin-service} could contain a list of the languages it supports.
+An \ivoep service that represents a \zeppelin Service that can support all three languages would reply with a positive response.
+In addition, the \codeword{servivceinfo} element for the \codeword{uri://zeppelin-service} could contain a list of the languages it supports.
 \begin{lstlisting}[language=json]
     {
     "reponseword": "YES",
@@ -613,39 +616,141 @@ The client is free to choose which method is most appropriate to use.
 \end{itemize}
 
 
-\section{Computing resources}
+\section{Resource requirements}
+\label{sec:resource-requirements}
+
+In order to evaluate whether a Service can execute a Task, an execution planner needs to know what level of resources the Task requires.
+
+This is not covered by simply referring to the software to execute.
+The level of resources required to execute a Task depends on several factors,
+including what data sets are involved, and what the user wants to do with them.
+
+An example of this comes from the Gaia data analysis platform\footurl{https://github.com/wfau/aglais} being developed at Edinburgh University.
+The service provides a Zeppelin notebook platform together with a Spark cluster co-located with a copy of the Gaia DR2 and eDR3 datasets.
+As part of the examples developed with the service, we have three types of analysis each requiring different levels of resources.
+
+\begin{itemize}
+    \item A simple aggregate calculation of mean proper motions across the sky.
+    This uses 5 compute nodes, with a total of 70 cores and 225 Gbytes of memory
+    and takes less that 1 minute to complete.
+    \item A machine learning example that uses 5 nodes, 135 cores, 225 Gbytes of memory
+    and takes around 5 minutes to complete.
+    \item A complex analysis that uses 7 nodes, 217 cores, 360 Gbytes of memory
+    and takes over 9 hours to complete.
+\end{itemize}
+
+Although the complexity is related to the code in the notebooks themselves, this is not necessarily fixed.
+It is possible to pass input parameters into the notebooks at runtime to select how much of which data set is used in the analysis.
+
+This makes it possible to use a partial data set while working on a notebook interactivley during development,
+and then initiate a longer run using the full data set once the analysis workflow has been finished.
+
+There may also be cases where a science platform chooses to offer different levels of resources to different users,
+depending on which groups they belong to.
+
+A guest user may only be allowed to use a limited set of resources to run simpler analysis tasks on a smal \dataset.
+A more experienced power user may be granted access to enough resources to run
+the complex analysis on the full dataset.
+
+The \ivoep interface provides a process for client and server to describe the
+the level of resources required to run a task.
+
+\subsection{Computing resources}
 \label{sec:computing-resources}
 
-Request/response section describing the required and available resources.
-\\
-\\
-Example resource request:
-\begin{lstlisting}[language=yaml]
-    resources:
-        # Storage space (Gbytes)
-        minstore:  8G
-        maxstore: 10G
-        # CPU cores
-        mincores:  8
-        maxcores: 10
-        # Memory (Gbytes)
-        minmemory:  8G
-        maxmemory: 10G
-        # Startup time (s)
-        minstartup:  5s
-        maxstartup: 60s
-        # Execution time (duration)
-        minduration:  5m
-        maxduration: 10m
+In order to support this, a client may add a \codeword{resources} element to it's request to describe the minimum compute resources that are needed to execute the Task.
+
+\begin{lstlisting}[language=json, mathescape=true]
+    {
+    "tasktype": "uri://zeppelin-notebook",
+    "taskinfo": {
+        ....
+        }
+    "resources": {
+        $\textbf{mincores: 8}$
+        $\textbf{minmemory: 8G}$
+        }
+    }
 \end{lstlisting}
 
-If the requested resources are available, the \ivoep service may reply with a simple YES response. It may also include a resources element with updated values for the available resources.
+If the resources are available, the \ivoep service should include a copy of the \codeword{resources} element in the  response, updated to include the maximum resources that it is able to offer.
 
+\begin{lstlisting}[language=json, mathescape=true]
+    {
+    "reponseword": "YES",
+    "servicetype": "uri://zeppelin-service",
+    "serviceinfo": {
+        ....
+        }
+    "resources": {
+        mincores:  8
+        $\textbf{maxcores: 12}$
+        minmemory:  8G
+        $\textbf{maxmemory: 16G}$
+        }
+    }
+\end{lstlisting}
 
-If the request asks for more than the available resources, the Task will be rejected.
-Simple NO. It may also include a resources element with available resources and optional warning messages.
+This negotiation shows is that the client is requesting a minimum of 8 cores and 8G of memory,
+and the \ivoep service is offering to extend that to 12 cores and 16G of memory.
 
-ISO 8601 duration
+If it receives simlar responses from other \ivoep services, the client can then decide which
+service to use based on the resources they offer.
+
+\subsection{Execution time}
+\label{sec:execution-time}
+
+This kind of negotiation can also be applied to execution time.
+A client may use the \codeword{resources} element to set the maximum startup time it will accept and the minimum execution time it expects the Task will take.
+
+\begin{lstlisting}[language=json, mathescape=true]
+    {
+    "tasktype": "uri://docker-container",
+    "taskinfo": {
+        ....
+        }
+    "resources": {
+        $\textbf{maxstartup: 60s}$
+        $\textbf{minduration: 5m}$
+        }
+    }
+\end{lstlisting}
+
+This is saying the client wants the task to start within 60 seconds of sending the execution request, and it expects the task to take at least 5 minutes to execute.
+
+If the timings are acceptable, the \ivoep service should include a copy of the \codeword{resources} element in the response, updated to include the timings that it is able to offer.
+
+\begin{lstlisting}[language=json, mathescape=true]
+    {
+    "reponseword": "YES",
+    "servicetype": "uri://docker-uws",
+    "serviceinfo": {
+        ....
+        }
+    "resources": {
+        $\textbf{minstartup: 5s}$
+        maxstartup: 60s
+        minduration: 5m
+        $\textbf{maxduration: 10m}$
+        }
+    }
+\end{lstlisting}
+
+This negotiation shows is that the client needs a minimum of 5 minutes to execute the task,
+and the service is extending that to offer 10 minutes of time.
+
+In addition, the client is specifying a maximum startup time of 60 seconds,
+but the service is offering to be able to start the Task within 5 seconds
+of receiving the execution request.
+
+Again, given simlar responses from other \ivoep services, the client can use this information decide which service to use based on the time constraints they offer.
+
+\subsection{Storage resources}
+\label{sec:storage-resources}
+
+TBD
+Based on Kubernetes volume claims for ephemeral and persisten storage.
+
 
 \section{Data access}
 \label{sec:data-access}
