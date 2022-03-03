@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    |
+    | Copyright (c) 2022, ROE (http://www.roe.ac.uk/)
+    | All rights reserved.
+    |
+    | This program is free software: you can redistribute it and/or modify
+    | it under the terms of the GNU General Public License as published by
+    | the Free Software Foundation, either version 3 of the License, or
+    | (at your option) any later version.
+    |
+    | This program is distributed in the hope that it will be useful,
+    | but WITHOUT ANY WARRANTY; without even the implied warranty of
+    | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    | GNU General Public License for more details.
+    |
+    | You should have received a copy of the GNU General Public License
+    | along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    |
+    +-->
+<xsd:schema
+    targetNamespace="http://www.ivoa.net/xml/ExecPlanner/v0.1"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:exp="http://www.ivoa.net/xml/ExecPlanner/v0.1"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    version="0.1"
+    >
+
+    <xsd:simpleType name="uuidType">
+        <xsd:annotation>
+            <xsd:documentation>
+                A restriction on string to specify a universally unique identifier (UUID).
+                Based on a simplification of the uuidType defined in Microsoft HailStorm project.
+                https://github.com/pvginkel/HailStorm
+                https://en.wikipedia.org/wiki/.NET_My_Services
+                and this StackOverflow post
+                https://stackoverflow.com/questions/1024627/how-to-add-a-guid-simpletype-into-an-xml-schema
+                https://stackoverflow.com/a/1024829
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:attributeGroup name="BasicAttributeGroup">
+        <xsd:attribute name="type" type="xsd:anyURI" use="required">
+            <xsd:annotation>
+                <xsd:documentation>
+                    A URI identifying the type of executable.
+                    Standard types may be registered in the IVOA registry.
+                    Custom types simply require a HTTP url ...
+                    By preference HTTP URLs should use a redirect from a permanet URL e.g. purl.org.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="uuid" type="exp:uuidType" use="required">
+            <xsd:annotation>
+                <xsd:documentation>
+                    A unique identifier for the component.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:attributeGroup>
+
+    <xsd:complexType name="BasicComplexType">
+        <xsd:annotation>
+            <xsd:documentation>
+                A base class for a complex type.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1" nillable="true">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        A human readable name for the component.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="description" type="xsd:string" minOccurs="0" maxOccurs="1" nillable="true">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        A human readable description for the component.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attributeGroup ref="exp:BasicAttributeGroup"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="ExecutableType">
+        <xsd:annotation>
+            <xsd:documentation>
+                The base class for an executable component.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="exp:BasicComplexType">
+                <xsd:sequence>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="ExecutableList">
+        <xsd:annotation>
+            <xsd:documentation>
+                A list of executable components.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="executable" type="exp:ExecutableType" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="ComputeResourceType">
+        <xsd:annotation>
+            <xsd:documentation>
+                The base class to describe a compute resource.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="exp:BasicComplexType">
+                <xsd:sequence>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="ComputeResourceList">
+        <xsd:annotation>
+            <xsd:documentation>
+                A list of compute resources.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="resource" type="exp:ComputeResourceType" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="DataResourceType">
+        <xsd:annotation>
+            <xsd:documentation>
+                The base class to describe a data resource.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="exp:BasicComplexType">
+                <xsd:sequence>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="DataResourceList">
+        <xsd:annotation>
+            <xsd:documentation>
+                A list of compute resources.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="resource" type="exp:DataResourceType" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:simpleType name="EnvironmentVariableName">
+        <xsd:annotation>
+            <xsd:documentation>
+                A restriction on string conform to a valid environment variable name.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[a-fA-F_]*"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="EnvironmentVariableType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Name/value pair to describe an environment variable.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+                <xsd:attribute name="name" type="exp:EnvironmentVariableName"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+
+
+</xsd:schema>
+
