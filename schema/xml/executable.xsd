@@ -28,10 +28,10 @@
     version="0.1"
     >
 
-    <xsd:simpleType name="uuidType">
+    <xsd:simpleType name="UUIDType">
         <xsd:annotation>
             <xsd:documentation>
-                A restriction on string to specify a universally unique identifier (UUID).
+                A regular expression to specify a universally unique identifier (UUID).
                 Based on a simplification of the uuidType defined in Microsoft HailStorm project.
                 https://github.com/pvginkel/HailStorm
                 https://en.wikipedia.org/wiki/.NET_My_Services
@@ -41,9 +41,56 @@
             </xsd:documentation>
         </xsd:annotation>
         <xsd:restriction base="xsd:string">
-            <xsd:pattern value="([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})"/>
+            <xsd:pattern value="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"/>
         </xsd:restriction>
     </xsd:simpleType>
+
+    <xsd:simpleType name="ISO8601DurationType">
+        <xsd:annotation>
+            <xsd:documentation>
+                A restriction on string to specify an ISO 8601 duration.
+                https://en.wikipedia.org/wiki/ISO_8601#Durations
+                https://regex101.com/
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <!--+
+                | https://stackoverflow.com/questions/32044846/regex-for-iso-8601-durations
+                | https://stackoverflow.com/a/69694361
+                | "^[-+]?P(?!$)(([-+]?\d+Y)|([-+]?\d+\.\d+Y$))?(([-+]?\d+M)|([-+]?\d+\.\d+M$))?(([-+]?\d+W)|([-+]?\d+\.\d+W$))?(([-+]?\d+D)|([-+]?\d+\.\d+D$))?(T(?=[\d+-])(([-+]?\d+H)|([-+]?\d+\.\d+H$))?(([-+]?\d+M)|([-+]?\d+\.\d+M$))?([-+]?\d+(\.\d+)?S)?)??$"
+                | ERROR - This expression is not supported in the current option setting.
+                | https://stackoverflow.com/questions/21573636/how-to-bypass-this-expression-is-not-supported-in-the-current-option-setting-e
+                |
+                +-->
+            <xsd:pattern value="P([0-9]+Y){0,1}([0-9]+M){0,1}([0-9]+D){0,1}(T([0-9]+H){0,1}([0-9]+M){0,1}([0-9]+S){0,1}){0,1}"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+
+    <xsd:simpleType name="EnvironmentVariableName">
+        <xsd:annotation>
+            <xsd:documentation>
+                A valid environment variable name.
+                https://regex101.com/
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[_a-fA-F]{1}[_0-9a-fA-F]{0,}"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="EnvironmentVariableType">
+        <xsd:annotation>
+            <xsd:documentation>
+                Name/value pair for an environment variable.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+                <xsd:attribute name="name" type="exp:EnvironmentVariableName"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
 
     <xsd:attributeGroup name="BasicAttributeGroup">
         <xsd:attribute name="type" type="xsd:anyURI" use="required">
@@ -56,7 +103,7 @@
                 </xsd:documentation>
             </xsd:annotation>
         </xsd:attribute>
-        <xsd:attribute name="uuid" type="exp:uuidType" use="required">
+        <xsd:attribute name="uuid" type="exp:UUIDType" use="required">
             <xsd:annotation>
                 <xsd:documentation>
                     A unique identifier for the component.
@@ -90,10 +137,10 @@
         <xsd:attributeGroup ref="exp:BasicAttributeGroup"/>
     </xsd:complexType>
 
-    <xsd:complexType name="ExecutableType">
+    <xsd:complexType name="DataResourceType">
         <xsd:annotation>
             <xsd:documentation>
-                The base class for an executable component.
+                The base class to describe an external data resource.
             </xsd:documentation>
         </xsd:annotation>
         <xsd:complexContent>
@@ -104,16 +151,57 @@
         </xsd:complexContent>
     </xsd:complexType>
 
-    <xsd:complexType name="ExecutableList">
+    <xsd:complexType name="DataResourceList">
         <xsd:annotation>
             <xsd:documentation>
-                A list of executable components.
+                A list of data resources.
             </xsd:documentation>
         </xsd:annotation>
         <xsd:sequence>
-            <xsd:element name="executable" type="exp:ExecutableType" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+            <xsd:element name="resource" type="exp:DataResourceType" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
         </xsd:sequence>
     </xsd:complexType>
+
+    <xsd:complexType name="StorageResourceType">
+        <xsd:annotation>
+            <xsd:documentation>
+                The base class to describe a local storage resource.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="exp:BasicComplexType">
+                <xsd:sequence>
+                    <!--+
+                        | The internal filesystem location where the resource will be mounted inside toe compute resource.
+                        +-->
+                    <xsd:element name="mountpath" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+                    <!--+
+                        | Minimum and maximum size (GiBytes).
+                        +-->
+                    <xsd:element name="minsize" type="xsd:integer" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="maxsize" type="xsd:integer" minOccurs="0" maxOccurs="1"/>
+                    <!--+
+                        | Minimum and maximum lifetime beyond the lifespan of the compute resource.
+                        +-->
+                    <xsd:element name="minlifetime" type="exp:ISO8601DurationType" minOccurs="0" maxOccurs="1"/>
+                    <xsd:element name="maxlifetime" type="exp:ISO8601DurationType" minOccurs="0" maxOccurs="1"/>
+
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="StorageResourceList">
+        <xsd:annotation>
+            <xsd:documentation>
+                A list of storage resources.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="resource" type="exp:StorageResourceType" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
 
     <xsd:complexType name="ComputeResourceType">
         <xsd:annotation>
@@ -124,6 +212,24 @@
         <xsd:complexContent>
             <xsd:extension base="exp:BasicComplexType">
                 <xsd:sequence>
+                    <!--+
+                        | Minimum and maximum number of (virtual) cpu cores.
+                        +-->
+                    <xsd:element name="mincores" type="xsd:integer" nillable="true"/>
+                    <xsd:element name="maxcores" type="xsd:integer" nillable="true"/>
+                    <!--+
+                        | Minimum and maximum size of memory (Gibytes).
+                        +-->
+                    <xsd:element name="minmemory" type="xsd:integer" nillable="true"/>
+                    <xsd:element name="maxmemory" type="xsd:integer" nillable="true"/>
+                    <!--+
+                        | List of external data resources.
+                        +-->
+                    <xsd:element name="data-resources" type="exp:DataResourceList" minOccurs="1" maxOccurs="1" nillable="true"/>
+                    <!--+
+                        | List of local storage resources.
+                        +-->
+                    <xsd:element name="storage-resources" type="exp:ComputeResourceList" minOccurs="1" maxOccurs="1" nillable="true"/>
                 </xsd:sequence>
             </xsd:extension>
         </xsd:complexContent>
@@ -140,55 +246,38 @@
         </xsd:sequence>
     </xsd:complexType>
 
-    <xsd:complexType name="DataResourceType">
+    <xsd:complexType name="ExecutableType">
         <xsd:annotation>
             <xsd:documentation>
-                The base class to describe a data resource.
+                The base class for an executable component.
             </xsd:documentation>
         </xsd:annotation>
         <xsd:complexContent>
             <xsd:extension base="exp:BasicComplexType">
                 <xsd:sequence>
+                    <!--+
+                        | A list of the compute resources required.
+                        +-->
+                    <xsd:element name="compute-resources" type="exp:ComputeResourceList" minOccurs="1" maxOccurs="1" nillable="true"/>
+                    <!--+
+                        | Allow derrived types to extend with new elements.
+                        +-->
+                    <xsd:any minOccurs="0"/>
                 </xsd:sequence>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
 
-    <xsd:complexType name="DataResourceList">
+    <xsd:complexType name="ExecutableList">
         <xsd:annotation>
             <xsd:documentation>
-                A list of compute resources.
+                A list of executable components.
             </xsd:documentation>
         </xsd:annotation>
         <xsd:sequence>
-            <xsd:element name="resource" type="exp:DataResourceType" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+            <xsd:element name="executable" type="exp:ExecutableType" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
         </xsd:sequence>
     </xsd:complexType>
-
-    <xsd:simpleType name="EnvironmentVariableName">
-        <xsd:annotation>
-            <xsd:documentation>
-                A restriction on string conform to a valid environment variable name.
-            </xsd:documentation>
-        </xsd:annotation>
-        <xsd:restriction base="xsd:string">
-            <xsd:pattern value="[a-fA-F_]*"/>
-        </xsd:restriction>
-    </xsd:simpleType>
-
-    <xsd:complexType name="EnvironmentVariableType">
-        <xsd:annotation>
-            <xsd:documentation>
-                Name/value pair to describe an environment variable.
-            </xsd:documentation>
-        </xsd:annotation>
-        <xsd:simpleContent>
-            <xsd:extension base="xsd:string">
-                <xsd:attribute name="name" type="exp:EnvironmentVariableName"/>
-            </xsd:extension>
-        </xsd:simpleContent>
-    </xsd:complexType>
-
 
 </xsd:schema>
 

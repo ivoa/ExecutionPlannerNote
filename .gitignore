@@ -6,3 +6,5 @@
 *.pdf
 *.toc
 ivoatexmeta.tex
+schema/xml/mappings
+
