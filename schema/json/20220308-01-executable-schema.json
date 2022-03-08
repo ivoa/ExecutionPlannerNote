@@ -58,6 +58,52 @@
         }
       }
     },
+    "ComputeVolumeSpec": {
+      "type": "object",
+      "typeType": "classInfo",
+      "typeName": {
+        "localPart": "ComputeVolumeSpec",
+        "namespaceURI": "http://www.ivoa.net/xml/ExecPlanner/v0.1"
+      },
+      "properties": {
+        "type": "string",
+        "path": "string",
+        "access": "string"
+      }
+    },
+    "LocalVolumeSpec": {
+      "type": "object",
+      "typeType": "classInfo",
+      "typeName": {
+        "localPart": "LocalVolumeSpec",
+        "namespaceURI": "http://www.ivoa.net/xml/ExecPlanner/v0.1"
+      },
+      "allOf": [
+        {
+          "$ref": "#/$defs/ComputeVolumeSpec"
+        }
+      ],
+      "properties": {
+        "minsize": "integer",
+        "maxsize": "integer"
+      }
+    },
+    "ResourceVolumeSpec": {
+      "type": "object",
+      "typeType": "classInfo",
+      "typeName": {
+        "localPart": "ResourceVolumeSpec",
+        "namespaceURI": "http://www.ivoa.net/xml/ExecPlanner/v0.1"
+      },
+      "allOf": [
+        {
+          "$ref": "#/$defs/ComputeVolumeSpec"
+        }
+      ],
+      "properties": {
+        "ref": "string"
+      }
+    },
     "ComputeResourceType": {
       "type": "object",
       "typeType": "classInfo",
@@ -75,7 +121,19 @@
         "maxcores": "integer",
         "minmemory": "integer",
         "maxmemory": "integer",
-        "volumes": []
+        "volumes": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/LocalVolumeSpec"
+              },
+              {
+                "$ref": "#/$defs/ResourceVolumeSpec"
+              }
+            ]
+          }
+        }
       }
     },
     "DataResourceType": {
@@ -141,4 +199,3 @@
     }
   }
 }
-
