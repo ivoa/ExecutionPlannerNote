@@ -1,0 +1,72 @@
+{
+  "executables": [
+    {
+      "name": "Executable-A",
+      "type": "vos:domain/resource",
+      "uuid": "7f787640-0519-40b1-80fa-9137ceebc309"
+    },
+    {
+      "name": "Executable-B",
+      "type": "http://purl.example.org/resource",
+      "uuid": "77c78ce2-71da-46ad-b3f0-cdb362716a56",
+      "description": "",
+      "compute-resources": [
+        {
+          "name": "worker00",
+          "type": "vos:compute/generic",
+          "uuid": "7f787640-0519-40b1-80fa-9137ceebc309"
+        },
+        {
+          "name": "worker01",
+          "type": "vos:compute/generic",
+          "uuid": "7f787640-0519-40b1-80fa-9137ceebc309",
+          "mincores": 2,
+          "maxcores": 4,
+          "minmemory": 8,
+          "maxmemory": 16,
+          "volumes": [
+            {
+              "type": "local",
+              "minsize": 20,
+              "maxsize": 20,
+              "path": "/temp",
+              "access": "readwrite"
+            },
+            {
+              "type": "resource",
+              "ref":  "${storage-resources/result-store-01/uuid}",
+              "path": "/results",
+              "access": "readwrite"
+            },
+            {
+              "type": "resource",
+              "ref": "${data-resources/data01/uuid}",
+              "path": "${data-resources/data01/local-path}",
+              "access": "readonly"
+            }
+          ]
+        }
+      ],
+      "data-resources": [
+        {
+          "name": "data01",
+          "type": "vos:data/rucio",
+          "uuid": "7f787640-0519-40b1-80fa-9137ceebc309",
+          "domain": "xxxx",
+          "resource": "xxxx",
+          "access": "readonly"
+        }
+      ],
+      "storage-resources": [
+        {
+          "name": "result-store-01",
+          "type": "vos:storage/generic",
+          "uuid": "7f787640-0519-40b1-80fa-9137ceebc309",
+          "size": "120Gi",
+          "lifetime": "P1d",
+          "access": "readwrite"
+        }
+      ]
+    }
+  ]
+}

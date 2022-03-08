@@ -1,0 +1,144 @@
+{
+  "$id": "http://www.ivoa.net/xml/ExecPlanner/v0.1#",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "executables": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/ExecutableType"
+      }
+    }
+  },
+  "$defs": {
+    "UUIDType": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "URIType": {
+      "type": "string",
+      "pattern": "^([0-9a-zA-Z]{1,}){1}:([0-9a-zA-Z]{1,}(.[-0-9a-zA-Z]){1,}){0,}(/([-./0-9a-zA-Z]){0,}){0,}$"
+    },
+    "ISO8601DurationType": {
+      "type": "string",
+      "pattern": "^P([0-9]+Y){0,1}([0-9]+M){0,1}([0-9]+D){0,1}(T([0-9]+H){0,1}([0-9]+M){0,1}([0-9]+S){0,1}){0,1}$"
+    },
+    "SimpleNameType": {
+      "type": "string",
+      "pattern": "^[_a-zA-Z]{1}[-_ 0-9a-zA-Z]{0,}$"
+    },
+    "EnvVarNameType": {
+      "type": "string",
+      "pattern": "^[_a-zA-Z]{1}[-_0-9a-zA-Z]{0,}$"
+    },
+    "BasicComplexType": {
+      "type": "object",
+      "typeType": "classInfo",
+      "typeName": {
+        "localPart": "BasicComplexType",
+        "namespaceURI": "http://www.ivoa.net/xml/ExecPlanner/v0.1"
+      },
+      "required": [
+        "name",
+        "type",
+        "uuid"
+      ],
+      "properties": {
+        "uuid": {
+          "$ref": "#/$defs/UUIDType"
+        },
+        "name": {
+          "$ref": "#/$defs/SimpleNameType"
+        },
+        "type": {
+          "$ref": "#/$defs/URIType"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "ComputeResourceType": {
+      "type": "object",
+      "typeType": "classInfo",
+      "typeName": {
+        "localPart": "ComputeResourceType",
+        "namespaceURI": "http://www.ivoa.net/xml/ExecPlanner/v0.1"
+      },
+      "allOf": [
+        {
+          "$ref": "#/$defs/BasicComplexType"
+        }
+      ],
+      "properties": {
+        "mincores": "integer",
+        "maxcores": "integer",
+        "minmemory": "integer",
+        "maxmemory": "integer",
+        "volumes": []
+      }
+    },
+    "DataResourceType": {
+      "type": "object",
+      "typeType": "classInfo",
+      "typeName": {
+        "localPart": "DataResourceType",
+        "namespaceURI": "http://www.ivoa.net/xml/ExecPlanner/v0.1"
+      },
+      "allOf": [
+        {
+          "$ref": "#/$defs/BasicComplexType"
+        }
+      ],
+      "properties": {}
+    },
+    "StorageResourceType": {
+      "type": "object",
+      "typeType": "classInfo",
+      "typeName": {
+        "localPart": "StorageResourceType",
+        "namespaceURI": "http://www.ivoa.net/xml/ExecPlanner/v0.1"
+      },
+      "allOf": [
+        {
+          "$ref": "#/$defs/BasicComplexType"
+        }
+      ],
+      "properties": {}
+    },
+    "ExecutableType": {
+      "type": "object",
+      "typeType": "classInfo",
+      "typeName": {
+        "localPart": "ExecutableType",
+        "namespaceURI": "http://www.ivoa.net/xml/ExecPlanner/v0.1"
+      },
+      "allOf": [
+        {
+          "$ref": "#/$defs/BasicComplexType"
+        }
+      ],
+      "properties": {
+        "data-resources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DataResourceType"
+          },
+          "compute-resources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/ComputeResourceType"
+            },
+            "storage-resources": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/StorageResourceType"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
