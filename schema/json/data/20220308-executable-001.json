@@ -2,14 +2,14 @@
   "executables": [
     {
       "name": "Executable-A",
-      "type": "vos:domain/resource",
+      "type": "http://purl.example.org/executable/types/example-task",
       "uuid": "7f787640-0519-40b1-80fa-9137ceebc309"
     },
     {
       "name": "Executable-B",
-      "type": "http://purl.example.org/resource",
+      "type": "http://purl.example.org/executable/types/example-task",
       "uuid": "77c78ce2-71da-46ad-b3f0-cdb362716a56",
-      "description": "",
+      "description": "A more detaled example",
       "compute-resources": [
         {
           "name": "worker00",
@@ -29,19 +29,18 @@
               "type": "ephemeral",
               "minsize": 20,
               "maxsize": 20,
-              "path": "/temp"
+              "path": "/var/local/temp"
             },
             {
-              "type": "resource",
-              "ref":  "${storage-resources/result-store-01/uuid}",
-              "path": "/results"
+              "type": "data-resource",
+              "name": "data01",
+              "path": "/var/local/inputs}"
             },
             {
-              "type": "resource",
-              "ref":  "${data-resources/data01/uuid}",
-              "path": "${data-resources/data01/local-path}"
+              "type": "storage-resource",
+              "name": "result-store-01",
+              "path": "/var/local/results"
             }
-
           ]
         }
       ],
@@ -51,7 +50,8 @@
           "type": "vos:data/rucio",
           "uuid": "7f787640-0519-40b1-80fa-9137ceebc309",
           "domain": "xxxx",
-          "resource": "xxxx"
+          "resource": "xxxx",
+          "access": "readonly"
         }
       ],
       "storage-resources": [
@@ -61,7 +61,7 @@
           "uuid": "7f787640-0519-40b1-80fa-9137ceebc309",
           "size": "120Gi",
           "lifetime": "P1d",
-          "access": "readwriteonce"
+          "access": "readwrite"
         }
       ]
     }
