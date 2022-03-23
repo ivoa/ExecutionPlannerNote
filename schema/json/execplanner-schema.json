@@ -1,0 +1,104 @@
+{
+  "$id": "https://bit.ly/ivoa-execplanner",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "ExecutableLeaseType": {
+      "type": "object",
+      "typeType": "classInfo",
+      "typeName": {
+        "localPart": "ExecutableLeaseType",
+        "namespaceURI": "https://bit.ly/ivoa-execplanner"
+        },
+      "allOf": [
+        {
+          "$ref": "https://bit.ly/ivoa-executable#/$defs/ExecutableTaskType"
+        }
+      ],
+      "properties": {
+        "lease": {
+          "startdate": {
+            "$ref": "https://bit.ly/ivoa-executable#/$defs/ISO8601DateType"
+            },
+          "enddate": {
+            "$ref": "https://bit.ly/ivoa-executable#/$defs/ISO8601DateType"
+            }
+          }
+        }
+      },
+    "ExecutableOfferType": {
+      "type": "object",
+      "typeType": "classInfo",
+      "typeName": {
+        "localPart": "ExecutableOfferType",
+        "namespaceURI": "https://bit.ly/ivoa-execplanner"
+        },
+      "allOf": [
+        {
+          "$ref": "https://bit.ly/ivoa-executable#/$defs/ExecutableLeaseType"
+        }
+      ],
+      "properties": {
+        "request": "https://bit.ly/ivoa-executable#/$defs/UUIDType",
+        "offer": {
+          "startdate": {
+            "$ref": "https://bit.ly/ivoa-executable#/$defs/ISO8601DateType"
+            },
+          "enddate": {
+            "$ref": "https://bit.ly/ivoa-executable#/$defs/ISO8601DateType"
+          }
+        }
+      },
+
+    "ExecutableRejectType": {
+      "type": "object",
+      "typeType": "classInfo",
+      "typeName": {
+        "localPart": "ExecutableRejectType",
+        "namespaceURI": "https://bit.ly/ivoa-execplanner"
+        },
+      "allOf": [
+        {
+          "$ref": "https://bit.ly/ivoa-executable#/$defs/ExecutableLeaseType"
+        }
+      ],
+      "properties": {
+        "reason": "string",
+        "message": "string"
+        }
+      },
+
+    "ExecutableRequestType": {
+      "type": "object",
+      "typeType": "classInfo",
+      "typeName": {
+        "localPart": "ExecutableRequestType",
+        "namespaceURI": "https://bit.ly/ivoa-execplanner"
+        },
+      "properties": {
+        "requests": {
+          "type": "array",
+          "$ref": "#/$defs/ExecutableLeaseType"
+          }
+        }
+      },
+    "ExecutableResponseType": {
+      "type": "object",
+      "typeType": "classInfo",
+      "typeName": {
+        "localPart": "ExecutableResponseType",
+        "namespaceURI": "https://bit.ly/ivoa-execplanner"
+        },
+      "properties": {
+        "offers": {
+          "type": "array",
+          "$ref": "#/$defs/ExecutableOfferType"
+          },
+        "rejects": {
+          "type": "array",
+          "$ref": "#/$defs/ExecutableRejectType"
+          }
+        }
+      }
+    }
+  }
+
