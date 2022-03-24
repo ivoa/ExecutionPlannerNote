@@ -1,14 +1,9 @@
 {
   "$id": "https://bit.ly/ivoa-execplanner",
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$defs": {
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "definitions": {
     "ExecutableLeaseType": {
       "type": "object",
-      "typeType": "classInfo",
-      "typeName": {
-        "localPart": "ExecutableLeaseType",
-        "namespaceURI": "https://bit.ly/ivoa-execplanner"
-        },
       "allOf": [
         {
           "$ref": "https://bit.ly/ivoa-executable#/$defs/ExecutableTaskType"
@@ -27,11 +22,6 @@
       },
     "ExecutableOfferType": {
       "type": "object",
-      "typeType": "classInfo",
-      "typeName": {
-        "localPart": "ExecutableOfferType",
-        "namespaceURI": "https://bit.ly/ivoa-execplanner"
-        },
       "allOf": [
         {
           "$ref": "https://bit.ly/ivoa-executable#/$defs/ExecutableLeaseType"
@@ -51,11 +41,6 @@
 
     "ExecutableRejectType": {
       "type": "object",
-      "typeType": "classInfo",
-      "typeName": {
-        "localPart": "ExecutableRejectType",
-        "namespaceURI": "https://bit.ly/ivoa-execplanner"
-        },
       "allOf": [
         {
           "$ref": "https://bit.ly/ivoa-executable#/$defs/ExecutableLeaseType"
@@ -69,11 +54,6 @@
 
     "ExecutableRequestType": {
       "type": "object",
-      "typeType": "classInfo",
-      "typeName": {
-        "localPart": "ExecutableRequestType",
-        "namespaceURI": "https://bit.ly/ivoa-execplanner"
-        },
       "properties": {
         "requests": {
           "type": "array",
@@ -83,22 +63,17 @@
       },
     "ExecutableResponseType": {
       "type": "object",
-      "typeType": "classInfo",
-      "typeName": {
-        "localPart": "ExecutableResponseType",
-        "namespaceURI": "https://bit.ly/ivoa-execplanner"
-        },
       "properties": {
-        "offers": {
+        "offered": {
           "type": "array",
           "$ref": "#/$defs/ExecutableOfferType"
           },
-        "rejects": {
+        "rejected": {
           "type": "array",
           "$ref": "#/$defs/ExecutableRejectType"
           }
         }
       }
     }
-  }
-
+}
+}
