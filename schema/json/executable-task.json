@@ -145,14 +145,14 @@
             "properties": {
                 "minlifetime": {"$ref": "#/definitions/ISO8601DurationType"},
                 "maxlifetime": {"$ref": "#/definitions/ISO8601DurationType"}
-            },
-            "ComputePlatformType": {
-                "type": "object",
-                "allOf": [
-                    {"$ref": "#/definitions/BasicComplexType"}
-                ],
-                "properties": {}
             }
+        },
+        "ComputePlatformType": {
+            "type": "object",
+            "allOf": [
+                {"$ref": "#/definitions/BasicComplexType"}
+            ],
+            "properties": {}
         }
     }
 }

@@ -11,9 +11,9 @@
                 "EXPIRED"
             ]
         },
-        "expirydate": {"$ref": "https://bit.ly/3upmE9p#/definitions/ISO8601DateType"},
-        "startdate": {"$ref": "https://bit.ly/3upmE9p#/definitions/ISO8601DateType"},
-        "enddate": {"$ref": "https://bit.ly/3upmE9p#/definitions/ISO8601DateType"},
+        "offerexpirydate": {"$ref": "https://bit.ly/3upmE9p#/definitions/ISO8601DateType"},
+        "leasestartdate": {"$ref": "https://bit.ly/3upmE9p#/definitions/ISO8601DateType"},
+        "leaseenddate": {"$ref": "https://bit.ly/3upmE9p#/definitions/ISO8601DateType"},
         "platform": {"$ref": "https://bit.ly/3upmE9p#/definitions/ComputePlatformType"},
         "task": {"$ref": "https://bit.ly/3upmE9p"}
     }
