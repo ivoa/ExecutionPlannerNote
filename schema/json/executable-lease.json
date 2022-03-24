@@ -1,37 +1,20 @@
 {
-    "$id": "https://bit.ly/ivoa-executable-lease",
+    "$id": "https://bit.ly/3Lc5WRz",
     "$schema": "https://json-schema.org/draft-07/schema",
     "type": "object",
-    "allOf": [
-        {"$ref": "https://bit.ly/ivoa-executable-task"}
-    ],
     "properties": {
         "status": {
             "enum": [
-                "REQUESTED",
                 "OFFERED",
                 "ACCEPTED",
                 "REJECTED",
                 "EXPIRED"
             ]
         },
-        "messages": {
-            "type": "array",
-            "items": {"type": "string"}
-        },
-        "lease": {
-            "type": "object",
-            "properties": {
-                "startdate": {"$ref": "https://bit.ly/ivoa-executable-task#/definitions/ISO8601DateType"},
-                "enddate": {"$ref": "https://bit.ly/ivoa-executable-task#/definitions/ISO8601DateType"}
-            }
-        },
-        "offer": {
-            "type": "object",
-            "properties": {
-                "startdate": {"$ref": "https://bit.ly/ivoa-executable-task#/definitions/ISO8601DateType"},
-                "enddate": {"$ref": "https://bit.ly/ivoa-executable-task#/definitions/ISO8601DateType"}
-            }
-        }
+        "expirydate": {"$ref": "https://bit.ly/3upmE9p#/definitions/ISO8601DateType"},
+        "startdate": {"$ref": "https://bit.ly/3upmE9p#/definitions/ISO8601DateType"},
+        "enddate": {"$ref": "https://bit.ly/3upmE9p#/definitions/ISO8601DateType"},
+        "platform": {"$ref": "https://bit.ly/3upmE9p#/definitions/ComputePlatformType"},
+        "task": {"$ref": "https://bit.ly/3upmE9p"}
     }
 }

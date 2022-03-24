@@ -1,5 +1,5 @@
 {
-    "$id": "https://bit.ly/ivoa-executable-task",
+    "$id": "https://bit.ly/3upmE9p",
     "$schema": "https://json-schema.org/draft-07/schema",
     "type": "object",
     "allOf": [
@@ -50,7 +50,6 @@
             "type": "object",
             "properties": {
                 "uuid": {"$ref": "#/definitions/UUIDType"},
-                "name": {"$ref": "#/definitions/SimpleNameType"},
                 "type": {"$ref": "#/definitions/URIType"},
                 "title": {"type": "string"},
                 "description": {"type": "string"}
@@ -146,6 +145,13 @@
             "properties": {
                 "minlifetime": {"$ref": "#/definitions/ISO8601DurationType"},
                 "maxlifetime": {"$ref": "#/definitions/ISO8601DurationType"}
+            },
+            "ComputePlatformType": {
+                "type": "object",
+                "allOf": [
+                    {"$ref": "#/definitions/BasicComplexType"}
+                ],
+                "properties": {}
             }
         }
     }
