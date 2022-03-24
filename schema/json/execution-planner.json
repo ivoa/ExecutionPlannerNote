@@ -1,0 +1,57 @@
+{
+    "$id": "https://bit.ly/ivoa-execution-planner",
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "definitions": {
+        "ExecutableLeaseType": {
+            "type": "object",
+            "allOf": [
+                {"$ref": "https://bit.ly/ivoa-executable-task"}
+            ],
+            "properties": {
+                "status": {
+                    "enum": [
+                        "REQUESTED",
+                        "OFFERED",
+                        "ACCEPTED",
+                        "REJECTED",
+                        "EXPIRED"
+                    ]
+                },
+                "messages": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                },
+                "lease": {
+                    "startdate": {"$ref": "https://bit.ly/ivoa-executable-task#/definitions/ISO8601DateType"},
+                    "enddate": {"$ref": "https://bit.ly/ivoa-executable-task#/definitions/ISO8601DateType"}
+                },
+                "offer": {
+                    "startdate": {"$ref": "https://bit.ly/ivoa-executable-task#/definitions/ISO8601DateType"},
+                    "enddate": {"$ref": "https://bit.ly/ivoa-executable-task#/definitions/ISO8601DateType"}
+                }
+            }
+        },
+        "ExecutableRequestType": {
+            "type": "object",
+            "properties": {
+                "requests": {
+                    "type": "array",
+                    "$ref": "#/definitions/ExecutableLeaseType"
+                }
+            }
+        },
+        "ExecutableResponseType": {
+            "type": "object",
+            "properties": {
+                "offered": {
+                    "type": "array",
+                    "$ref": "#/definitions/ExecutableLeaseType"
+                },
+                "rejected": {
+                    "type": "array",
+                    "$ref": "#/definitions/ExecutableLeaseType"
+                }
+            }
+        }
+    }
+}
