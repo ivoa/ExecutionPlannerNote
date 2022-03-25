@@ -5,6 +5,6 @@
 *.out
 *.pdf
 *.toc
+*.xpr
 ivoatexmeta.tex
-schema/xml/mappings
 
