@@ -1,0 +1,147 @@
+{
+    "$id": "https://bit.ly/3upmE9p",
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "type": "object",
+    "allOf": [
+        {"$ref": "#/definitions/BasicComplexType"}
+    ],
+    "properties": {
+        "minduration": {
+            "type": "string",
+            "format": "duration"
+        },
+        "maxduration": {
+            "type": "string",
+            "format": "duration"
+        },
+        "external-resources": {
+            "type": "array",
+            "items": {"$ref": "#/definitions/ExternalResourceType"}
+        },
+        "compute-resources": {
+            "type": "array",
+            "items": {"$ref": "#/definitions/ComputeResourceType"}
+        },
+        "storage-resources": {
+            "type": "array",
+            "items": {"$ref": "#/definitions/StorageResourceType"}
+        }
+    },
+    "definitions": {
+        "UUIDType": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        },
+        "ISO8601DurationType": {
+            "type": "string",
+            "pattern": "^P([0-9]+Y){0,1}([0-9]+M){0,1}([0-9]+D){0,1}(T([0-9]+H){0,1}([0-9]+M){0,1}([0-9]+S){0,1}){0,1}$"
+        },
+        "ISO8601DateType": {
+            "type": "string",
+            "pattern": "^([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2}(\\.[0-9]{1,}){0,1})$"
+        },
+        "BasicComplexType": {
+            "type": "object",
+            "properties": {
+                "uuid": {"$ref": "#/definitions/UUIDType"},
+                "type": {
+                    "type": "string",
+                    "format": "uri"
+                },
+                "title": {"type": "string"},
+                "description": {"type": "string"}
+            },
+            "required": [
+                "type",
+                "uuid"
+            ]
+        },
+        "ComputeVolumeSpec": {
+            "type": "object",
+            "properties": {
+                "path": {"type": "string"},
+                "access": {
+                    "enum": [
+                        "READONLY",
+                        "READWRITE"
+                    ]
+                }
+            },
+            "required": ["path"]
+        },
+        "LocalVolumeSpec": {
+            "type": "object",
+            "allOf": [
+                {"$ref": "#/definitions/ComputeVolumeSpec"}
+            ],
+            "properties": {
+                "minsize": {"type": "integer"},
+                "maxsize": {"type": "integer"}
+            }
+        },
+        "ResourceVolumeSpec": {
+            "type": "object",
+            "allOf": [
+                {"$ref": "#/definitions/ComputeVolumeSpec"}
+            ],
+            "properties": {
+                "resource": {"$ref": "#/definitions/UUIDType"}
+            }
+        },
+        "ComputeResourceType": {
+            "type": "object",
+            "allOf": [
+                {"$ref": "#/definitions/BasicComplexType"}
+            ],
+            "properties": {
+                "instances": {"type": "integer"},
+                "mincores": {"type": "integer"},
+                "maxcores": {"type": "integer"},
+                "minmemory": {"type": "integer"},
+                "maxmemory": {"type": "integer"},
+                "local-volumes": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/LocalVolumeSpec"}
+                },
+                "resource-volumes": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/ResourceVolumeSpec"}
+                }
+            }
+        },
+        "ExternalResourceType": {
+            "type": "object",
+            "allOf": [
+                {"$ref": "#/definitions/BasicComplexType"}
+            ],
+            "properties": {
+                "location": {"type": "string", "format": "url"}
+            }
+        },
+        "StorageResourceType": {
+            "type": "object",
+            "allOf": [
+                {"$ref": "#/definitions/BasicComplexType"}
+            ],
+            "properties": {
+                "minsize": {"type": "integer"},
+                "maxsize": {"type": "integer"},
+                "minlifetime": {
+                    "type": "string",
+                    "format": "duration"
+                },
+                "maxlifetime": {
+                    "type": "string",
+                    "format": "duration"
+                }
+            }
+        },
+        "ComputePlatformType": {
+            "type": "object",
+            "allOf": [
+                {"$ref": "#/definitions/BasicComplexType"}
+            ],
+            "properties": {}
+        }
+    }
+}

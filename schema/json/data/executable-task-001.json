@@ -1,0 +1,57 @@
+{
+    "$schema": "../executable-task.json",
+    "uuid": "9f6b2218-6089-4331-9a81-871550b5b43a",
+    "type": "urn:example-task",
+    "minduration": "PT1H",
+    "title": "Example task",
+    "description": "Describe an example task",
+    "compute-resources": [
+        {
+            "uuid": "1581bb04-4cb7-41a1-b295-ff572f231a89",
+            "type": "urn:example-compute-resources",
+            "instances": 1,
+            "mincores": 1,
+            "minmemory": 1,
+            "local-volumes": [
+                {
+                    "path": "/results",
+                    "access": "READWRITE",
+                    "minsize": 120,
+                    "maxsize": 120
+                }
+            ],
+            "resource-volumes": [
+                {
+                    "path": "/input",
+                    "access": "READONLY",
+                    "resource": "401f6251-be15-4f8a-bad7-38ef4d6cb7c1"
+                }
+            ]
+        }
+    ],
+    "external-resources": [
+        {
+            "uuid": "401f6251-be15-4f8a-bad7-38ef4d6cb7c1",
+            "type": "urn:example-S3-resource",
+            "endpoint": "s3.echo.stfc.ac.uk/%(bucket)",
+            "location": "s3://gaia-edr3"
+            
+        }
+    ],
+    "storage-resources": [
+        {
+            "uuid": "53ec7ad8-e1ed-4e91-92bc-885cbb57dabd",
+            "type": "urn:storage-type",
+            "minsize": 1024,
+            "maxsize": 1024
+        },
+        {
+            "uuid": "9080ce80-9e54-4592-8249-5f62c5e2d120",
+            "type": "urn:storage-type",
+            "minlifetime": "P7D",
+            "maxlifetime": "P1M",
+            "minsize": 120,
+            "maxsize": 120
+        }
+    ]
+}

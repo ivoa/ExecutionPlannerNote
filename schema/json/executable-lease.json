@@ -1,0 +1,29 @@
+{
+    "$id": "https://bit.ly/3Lc5WRz",
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "type": "object",
+    "properties": {
+        "status": {
+            "enum": [
+                "OFFERED",
+                "ACCEPTED",
+                "REJECTED",
+                "EXPIRED"
+            ]
+        },
+        "offerenddate": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "leasestartdate": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "leaseenddate": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "platform": {"$ref": "https://bit.ly/3upmE9p#/definitions/ComputePlatformType"},
+        "task": {"$ref": "https://bit.ly/3upmE9p"}
+    }
+}

@@ -1,0 +1,28 @@
+{
+    "$id": "https://bit.ly/ivoa-execution-planner",
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "definitions": {
+        "ExecutableRequestType": {
+            "type": "object",
+            "properties": {
+                "requests": {
+                    "type": "array",
+                    "$ref": "#/definitions/ExecutableLeaseType"
+                }
+            }
+        },
+        "ExecutableResponseType": {
+            "type": "object",
+            "properties": {
+                "offered": {
+                    "type": "array",
+                    "$ref": "#/definitions/ExecutableLeaseType"
+                },
+                "rejected": {
+                    "type": "array",
+                    "$ref": "#/definitions/ExecutableLeaseType"
+                }
+            }
+        }
+    }
+}
