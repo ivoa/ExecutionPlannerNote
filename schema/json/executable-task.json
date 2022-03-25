@@ -23,17 +23,8 @@
             "items": {"$ref": "#/definitions/ComputeResourceType"}
         },
         "storage-resources": {
-            "type": "object",
-            "properties": {
-                "ephemeral": {
-                    "type": "array",
-                    "items": {"$ref": "#/definitions/EphemeralStorageType"}
-                },
-                "persistent": {
-                    "type": "array",
-                    "items": {"$ref": "#/definitions/PersistentStorageType"}
-                }
-            }
+            "type": "array",
+            "items": {"$ref": "#/definitions/StorageResourceType"}
         }
     },
     "definitions": {
@@ -132,22 +123,7 @@
             ],
             "properties": {
                 "minsize": {"type": "integer"},
-                "maxsize": {"type": "integer"}
-            }
-        },
-        "EphemeralStorageType": {
-            "type": "object",
-            "allOf": [
-                {"$ref": "#/definitions/StorageResourceType"}
-            ],
-            "properties": {}
-        },
-        "PersistentStorageType": {
-            "type": "object",
-            "allOf": [
-                {"$ref": "#/definitions/StorageResourceType"}
-            ],
-            "properties": {
+                "maxsize": {"type": "integer"},
                 "minlifetime": {
                     "type": "string",
                     "format": "duration"

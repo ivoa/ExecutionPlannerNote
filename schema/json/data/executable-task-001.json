@@ -35,25 +35,20 @@
             "type": "urn:example-data-resource"
         }
     ],
-    "storage-resources": 
+    "storage-resources": [
         {
-        "ephemeral": [
-            {
             "uuid": "53ec7ad8-e1ed-4e91-92bc-885cbb57dabd",
             "type": "urn:storage-type",
             "minsize": 1024,
             "maxsize": 1024
-            }
-        ],
-        "persistent": [
-            {
+        },
+        {
             "uuid": "53ec7ad8-e1ed-4e91-92bc-885cbb57dabd",
             "type": "urn:storage-type",
             "minlifetime": "P7D",
             "maxlifetime": "P1M",
             "minsize": 120,
             "maxsize": 120
-            }
-        ]
-    }
+        }
+    ]
 }
