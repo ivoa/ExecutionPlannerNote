@@ -14,9 +14,9 @@
             "type": "string",
             "format": "duration"
         },
-        "data-resources": {
+        "external-resources": {
             "type": "array",
-            "items": {"$ref": "#/definitions/DataResourceType"}
+            "items": {"$ref": "#/definitions/ExternalResourceType"}
         },
         "compute-resources": {
             "type": "array",
@@ -109,12 +109,14 @@
                 }
             }
         },
-        "DataResourceType": {
+        "ExternalResourceType": {
             "type": "object",
             "allOf": [
                 {"$ref": "#/definitions/BasicComplexType"}
             ],
-            "properties": {}
+            "properties": {
+                "location": {"type": "string", "format": "url"}
+            }
         },
         "StorageResourceType": {
             "type": "object",

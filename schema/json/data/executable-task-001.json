@@ -29,10 +29,13 @@
             ]
         }
     ],
-    "data-resources": [
+    "external-resources": [
         {
             "uuid": "401f6251-be15-4f8a-bad7-38ef4d6cb7c1",
-            "type": "urn:example-data-resource"
+            "type": "urn:example-S3-resource",
+            "endpoint": "s3.echo.stfc.ac.uk/%(bucket)",
+            "location": "s3://gaia-edr3"
+            
         }
     ],
     "storage-resources": [
@@ -43,7 +46,7 @@
             "maxsize": 1024
         },
         {
-            "uuid": "53ec7ad8-e1ed-4e91-92bc-885cbb57dabd",
+            "uuid": "9080ce80-9e54-4592-8249-5f62c5e2d120",
             "type": "urn:storage-type",
             "minlifetime": "P7D",
             "maxlifetime": "P1M",
