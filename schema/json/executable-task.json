@@ -23,8 +23,17 @@
             "items": {"$ref": "#/definitions/ComputeResourceType"}
         },
         "storage-resources": {
-            "type": "array",
-            "items": {"$ref": "#/definitions/StorageResourceType"}
+            "type": "object",
+            "properties": {
+                "ephemeral": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/EphemeralStorageType"}
+                },
+                "persistent": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/PersistentStorageType"}
+                }
+            }
         }
     },
     "definitions": {
