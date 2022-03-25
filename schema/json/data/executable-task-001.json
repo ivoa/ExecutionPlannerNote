@@ -12,21 +12,35 @@
             "instances": 1,
             "mincores": 1,
             "minmemory": 1,
-            "volumes": [
+            "local-volumes": [
                 {
-                "type": "RESOURCE",
+                    "path": "/results",
+                    "access": "READWRITE",
+                    "minsize": 120,
+                    "maxsize": 120
+                }
+            ],
+            "resource-volumes": [
+                {
                     "path": "/input",
                     "access": "READONLY",
                     "resource": "401f6251-be15-4f8a-bad7-38ef4d6cb7c1"
-                },
-                {
-                "type": "LOCAL",
-                "path": "/results",
-                "access": "READWRITE",
-                "minsize": 120
                 }
             ]
-            
+        }
+    ],
+    "data-resources": [
+        {
+            "uuid": "401f6251-be15-4f8a-bad7-38ef4d6cb7c1",
+            "type": "urn:example-data-resource"
+        }
+    ],
+    "storage-resources": [
+        {
+            "uuid": "53ec7ad8-e1ed-4e91-92bc-885cbb57dabd",
+            "type": "urn:storage-type",
+            "maxsize": 120,
+            "minsize": 120
         }
     ]
 }
