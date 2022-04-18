@@ -1,32 +1,6 @@
 {
-    "$id": "https://bit.ly/3upmE9p",
+    "$id": "https://purl.org/ep.ivoa.net/schema/json/executable-task",
     "$schema": "https://json-schema.org/draft-07/schema",
-    "type": "object",
-    "allOf": [
-        {"$ref": "#/definitions/BasicComplexType"}
-    ],
-    "properties": {
-        "minduration": {
-            "type": "string",
-            "format": "duration"
-        },
-        "maxduration": {
-            "type": "string",
-            "format": "duration"
-        },
-        "external-resources": {
-            "type": "array",
-            "items": {"$ref": "#/definitions/ExternalResourceType"}
-        },
-        "compute-resources": {
-            "type": "array",
-            "items": {"$ref": "#/definitions/ComputeResourceType"}
-        },
-        "storage-resources": {
-            "type": "array",
-            "items": {"$ref": "#/definitions/StorageResourceType"}
-        }
-    },
     "definitions": {
         "UUIDType": {
             "type": "string",
@@ -109,7 +83,7 @@
                 }
             }
         },
-        "ExternalResourceType": {
+        "DataResourceType": {
             "type": "object",
             "allOf": [
                 {"$ref": "#/definitions/BasicComplexType"}
@@ -142,6 +116,34 @@
                 {"$ref": "#/definitions/BasicComplexType"}
             ],
             "properties": {}
+        },
+        "ExecutableTaskType": {
+            "type": "object",
+            "allOf": [
+                {"$ref": "#/definitions/BasicComplexType"}
+            ],
+            "properties": {
+                "minduration": {
+                    "type": "string",
+                    "format": "duration"
+                },
+                "maxduration": {
+                    "type": "string",
+                    "format": "duration"
+                },
+                "data-resources": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/DataResourceType"}
+                },
+                "compute-resources": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/ComputeResourceType"}
+                },
+                "storage-resources": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/StorageResourceType"}
+                }
+            },
         }
     }
 }
