@@ -1,33 +1,46 @@
 {
     "$id": "https://purl.org/ep.ivoa.net/schema/json/executable-lease",
-    "$schema": "https://json-schema.org/draft-07/schema",
+    "$schema": "http://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "properties": {
         "status": {
             "enum": [
+                "REQUESTED",
                 "OFFERED",
                 "ACCEPTED",
                 "REJECTED",
                 "EXPIRED"
-            ]
+            ],
+            "title": "Lease status",
+            "description": "The lease state indicating where in its life cycle the lease is."
         },
         "expirydate": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "title": "Expiry date",
+            "description": "The expiry date after which an OFFERED lease is no longer available to ACCEPT.\nThis property would be set by the service making an offer to indicates how long a client has before it must accept the offer to reserve the lease."
         },
         "startdate": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "title": "Start date",
+            "description": "The date/time when the lease starts."
         },
         "enddate": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "title": "End date",
+            "description": "The date/time when the lease ends. Any task still executing after this point may be\n                terminated and any resources associated with the lease may no longer be available\n                unless they have been explicitly reserved beyond the end of the lease. "
         },
         "platform": {
-            "$ref": "https://purl.org/ep.ivoa.net/schema/json/executable-task#/definitions/ComputePlatformType"
+            "$ref": "file:///home/Zarquan/Desktop/projects/IVOA/IVOA-ExecPlannerNote/github-zrq/schema/json/executable-task.json#/definitions/ComputePlatformType",
+            "title": "Compute\n                platform",
+            "description": "A description of the ComputePlatform where the Lease\n                would be executed. This primarily for human consumption, providing the user with\n                additional information to help them choose which lease to\n            select."
         },
         "task": {
-            "$ref": "https://purl.org/ep.ivoa.net/schema/json/executable-task#/definitions/ExecutableTaskType"
+            "$ref": "file:///home/Zarquan/Desktop/projects/IVOA/IVOA-ExecPlannerNote/github-zrq/schema/json/executable-task.json#/definitions/ExecutableTaskType",
+            "title": "Task\n                description",
+            "description": "A description of the ExecutableTask including\n                deatils of the compute, data and storage resources needed to execute\n                it."
         }
     }
 }

@@ -1,34 +1,56 @@
 {
     "$id": "https://purl.org/ep.ivoa.net/schema/json/executable-task",
-    "$schema": "https://json-schema.org/draft-07/schema",
+    "$schema": "http://json-schema.org/draft/2020-12/schema",
     "definitions": {
         "UUIDType": {
             "type": "string",
-            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+            "title": "RFC4122 UUID",
+            "description": "A regular expression to match the syntax for a UUID as defined by RFC4122. Note this is no longer needed as the string format for 'uuid' was added in JSON schema 2019-09."
         },
         "ISO8601DurationType": {
             "type": "string",
-            "pattern": "^P([0-9]+Y){0,1}([0-9]+M){0,1}([0-9]+D){0,1}(T([0-9]+H){0,1}([0-9]+M){0,1}([0-9]+S){0,1}){0,1}$"
+            "pattern": "^P([0-9]+Y){0,1}([0-9]+M){0,1}([0-9]+D){0,1}(T([0-9]+H){0,1}([0-9]+M){0,1}([0-9]+S){0,1}){0,1}$",
+            "title": "ISO 8601 time duration",
+            "description": "A regular expression to match the syntax for a time duration as defined by ISO 8601. Note this is no longer needed as the string format for 'duration' was added in JSON schema 2019-09."
         },
-        "ISO8601DateType": {
+        "ISO8601DateTimeType": {
             "type": "string",
-            "pattern": "^([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2}(\\.[0-9]{1,}){0,1})$"
+            "pattern": "^([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2}(\\.[0-9]{1,}){0,1})$",
+            "title": "ISO 8601 date time",
+            "description": "A regular expression to match the syntax for a date time value as defined by ISO 8601. "
         },
         "BasicComplexType": {
             "type": "object",
             "properties": {
-                "uuid": {"$ref": "#/definitions/UUIDType"},
+                "uuid": {
+                    "$ref": "#/definitions/UUIDType",
+                    "title": "UUID (Universal Unique Identifier)",
+                    "description": "A globally unique identifier for the component."
+                },
                 "type": {
                     "type": "string",
-                    "format": "uri"
+                    "format": "uri",
+                    "title": "Component type",
+                    "description": "A machine readable URI identifying the component type. Any URI format may be used, but it is recomended to use a URL format that can be resolved to point to a resource that describes the type."
                 },
-                "title": {"type": "string"},
-                "description": {"type": "string"}
+                "title": {
+                    "type": "string",
+                    "title": "Human readable title",
+                    "description": "An optional, human readable, title for the component."
+                },
+                "description": {
+                    "type": "string",
+                    "title": "Human readable description",
+                    "description": "An optional, human readable, description of the component."
+                }
             },
             "required": [
                 "type",
                 "uuid"
-            ]
+            ],
+            "title": "Base class for complex types",
+            "description": "A base class to include a standard set of properties in all our complex types."
         },
         "ComputeVolumeSpec": {
             "type": "object",
@@ -89,7 +111,10 @@
                 {"$ref": "#/definitions/BasicComplexType"}
             ],
             "properties": {
-                "location": {"type": "string", "format": "url"}
+                "location": {
+                    "type": "string",
+                    "format": "url"
+                }
             }
         },
         "StorageResourceType": {
@@ -143,7 +168,7 @@
                     "type": "array",
                     "items": {"$ref": "#/definitions/StorageResourceType"}
                 }
-            },
+            }
         }
     }
 }
