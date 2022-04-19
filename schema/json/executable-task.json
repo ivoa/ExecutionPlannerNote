@@ -1,6 +1,12 @@
 {
     "$id": "https://purl.org/ep.ivoa.net/schema/json/executable-task",
     "$schema": "http://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "allOf": [
+        {"$ref": "#/definitions/ExecutableTaskType"}
+        ],
+    "properties": {
+        },
     "definitions": {
         "UUIDType": {
             "type": "string",
