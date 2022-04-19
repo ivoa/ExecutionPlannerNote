@@ -62,7 +62,7 @@
             "required": ["path"],
             "description": "A base class for volume specifications, providing a common set of properties."
         },
-        "ComputeVolumeSpec": {
+        "LocalVolumeSpec": {
             "type": "object",
             "allOf": [
                 {"$ref": "#/definitions/BaseVolumeSpec"}
@@ -79,7 +79,7 @@
             },
             "description": "A local volume associated with a ComputeResource. Typically this would be allocated by the orchestration system as part of the ComputeResource and would have the same lifetime as the ComputeResource."
         },
-        "ResourceVolumeSpec": {
+        "ResourceVolumeRef": {
             "type": "object",
             "allOf": [
                 {"$ref": "#/definitions/BaseVolumeSpec"}
@@ -90,7 +90,7 @@
                     "description": "The UUID of the target resource."
                 }
             },
-            "description": "A volume specification that references a DataResource or StorageResource defined in the same document using the UUID of the target resource."
+            "description": "A volume specification that references a DataResource or StorageResource using the UUID of the target resource."
         },
         "DataResourceType": {
             "type": "object",
@@ -156,33 +156,99 @@
             },
             "description": "A strogare resource, provided by the orchestration system but separate from the individual compute resources. An example would be space on a shared CephFS storage systen that persists beyond the end of the task execution."
         },
+        "NetworkPortSpec": {
+            "allOf": [
+                {"$ref": "#/definitions/BasicComplexType"}
+            ],
+            "properties": {
+                "port": {
+                    "type": "integer",
+                    "description": "The network port number."
+                },
+                "scope": {
+                    "enum": [
+                        "private",
+                        "public"
+                    ],
+                    "description": "A flag to indicate if this network port is restricted to a private network or is accessible from the public internet."
+                }
+            }
+        },
         "ComputeResourceType": {
             "type": "object",
             "allOf": [
                 {"$ref": "#/definitions/BasicComplexType"}
             ],
             "properties": {
-                "instances": {"type": "integer"},
-                "mincores": {"type": "integer"},
-                "maxcores": {"type": "integer"},
-                "minmemory": {"type": "integer"},
-                "maxmemory": {"type": "integer"},
+                "instances": {
+                    "type": "integer",
+                    "description": "The number of instances of this compute resource. This makes it easier to define a cluster of multiple worker nodes by defining a single resource with multiple instances.",
+                    "default": 1
+                },
+                "hostname": {
+                    "type": "string",
+                    "description": "The hostname associated with this compute resource."
+                },
+                "mincores": {
+                    "type": "integer",
+                    "description": "The minimum numer of cpu cores required to execute the task in a resaonable timeframe.",
+                    "default": 1
+                },
+                "maxcores": {
+                    "type": "integer",
+                    "description": "The maximum number of cores on this compute resorce. This would typically be set by the service to indicate the maximum numnber of cores available for use by this task."
+                },
+                "minmemory": {
+                    "type": "integer",
+                    "description": "The minimum amount of memory in GiB (2^30) bytes. This is typically set by the client to indicate the minimum amount of memory required on this ComputeResource to execute the task.",
+                    "default": 1
+                },
+                "maxmemory": {
+                    "type": "integer",
+                    "description": "The maximum amount of memory GiB (2^30) bytes. This is typically set by the service to indicate the maximum amount of memory available on this ComputeResource."
+                },
                 "local-volumes": {
                     "type": "array",
-                    "items": {"$ref": "#/definitions/LocalVolumeSpec"}
+                    "items": {"$ref": "#/definitions/LocalVolumeSpec"},
+                    "description": "A list of LocalVolumes attached to this ComputeResource."
                 },
-                "resource-volumes": {
+                "storage-volumes": {
                     "type": "array",
-                    "items": {"$ref": "#/definitions/ResourceVolumeSpec"}
+                    "items": {"$ref": "#/definitions/ResourceVolumeRef"},
+                    "description": "A list of StorageVolumes attached to this ComputeResource."
+                },
+                "data-volumes": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/ResourceVolumeRef"},
+                    "description": "A list of DataVolumes attached to this ComputeResource."
+                },
+                "network-ports": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/NetworkPortSpec"},
+                    "description": "A list of NetworkPorts connected to this ComputeResource."
                 }
-            }
+            },
+            "description": "An instance of a computing resource. Typically this would map to an individual virtual machine in a cloud computing platforms."
         },
         "ComputePlatformType": {
             "type": "object",
             "allOf": [
                 {"$ref": "#/definitions/BasicComplexType"}
             ],
-            "properties": {}
+            "properties": {},
+            "description": "A description of the computing platform where the task would be executed. In most cases this would be provided by the service to help users select which platform to use. TODO Do we need to add more machine-readable properties to this ?"
+        },
+        "UserInterfaceType": {
+            "type": "object",
+            "allOf": [
+                {"$ref": "#/definitions/BasicComplexType"}
+            ],
+            "properties": {
+                "netport": {
+                    "$ref": "#/definitions/UUIDType",
+                    "description": "The UUID of the ComputeResource NetworkPort connected to this interface."
+                }
+            }
         },
         "ExecutableTaskType": {
             "type": "object",
@@ -192,25 +258,41 @@
             "properties": {
                 "minduration": {
                     "type": "string",
-                    "format": "duration"
+                    "format": "duration",
+                    "description": "The minimum duration of the task, expressed as an ISO8601 duration. This would typically be set by the client to indicate how long the user wants to use the resources for.",
+                    "default": "P1H"
                 },
                 "maxduration": {
                     "type": "string",
-                    "format": "duration"
+                    "format": "duration",
+                    "description": "The maximum duration of the task, expressed as an ISO8601 duration. This would typically be set by the service to indicate how long the resources will be available for."
                 },
                 "data-resources": {
                     "type": "array",
-                    "items": {"$ref": "#/definitions/DataResourceType"}
+                    "items": {"$ref": "#/definitions/DataResourceType"},
+                    "description": "A list of DataResources required to execute this task."
                 },
                 "compute-resources": {
                     "type": "array",
-                    "items": {"$ref": "#/definitions/ComputeResourceType"}
+                    "items": {"$ref": "#/definitions/ComputeResourceType"},
+                    "description": "A list of ComputeResources required to execute this task."
                 },
                 "storage-resources": {
                     "type": "array",
-                    "items": {"$ref": "#/definitions/StorageResourceType"}
+                    "items": {"$ref": "#/definitions/StorageResourceType"},
+                    "description": "A list of StorageResources required to execute this task."
+                },
+                "interactive": {
+                    "type": "boolean",
+                    "title": "A flag to indicate if this task requires interactive user input or if it can be run unattended."
+                },
+                "user-interfaces": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/UserInterfaceType"},
+                    "description": "A list of UserInterfaces associated with this task."
                 }
-            }
+            },
+            "description": "A description of an executable task, including details of the resources required to execute it."
         }
     }
 }
