@@ -44,7 +44,7 @@
             ],
             "description": "A base class to include a standard set of properties in all our complex types."
         },
-        "ComputeVolumeSpec": {
+        "BaseVolumeSpec": {
             "type": "object",
             "properties": {
                 "path": {
@@ -62,10 +62,10 @@
             "required": ["path"],
             "description": "A base class for volume specifications, providing a common set of properties."
         },
-        "LocalVolumeSpec": {
+        "ComputeVolumeSpec": {
             "type": "object",
             "allOf": [
-                {"$ref": "#/definitions/ComputeVolumeSpec"}
+                {"$ref": "#/definitions/BaseVolumeSpec"}
             ],
             "properties": {
                 "minsize": {
@@ -76,12 +76,13 @@
                     "type": "integer",
                     "description": "The maximum size of the volume in GiB (2^30) bytes. This is typically set by the service to indicate the maximum space available for the task to use."
                 }
-            }
+            },
+            "description": "A local volume associated with a ComputeResource. Typically this would be allocated by the orchestration system as part of the ComputeResource and would have the same lifetime as the ComputeResource."
         },
         "ResourceVolumeSpec": {
             "type": "object",
             "allOf": [
-                {"$ref": "#/definitions/ComputeVolumeSpec"}
+                {"$ref": "#/definitions/BaseVolumeSpec"}
             ],
             "properties": {
                 "resource": {
@@ -97,11 +98,20 @@
                 {"$ref": "#/definitions/BasicComplexType"}
             ],
             "properties": {
-                "location": {
+                "url": {
                     "type": "string",
                     "format": "url"
+                },
+                "mime-type": {
+                    "type": "string",
+                    "description": "The primary MIME type of the data resource. TODO - we need to discuss how to handle MIME types for compound objects. For exampl;e what is the MIME type of a tar.gzip file of images?"
+                },
+                "data-type": {
+                    "type": "string",
+                    "description": "The primary data type of the resource. TODO - we need to discuss what vocabularies to use for this."
                 }
-            }
+            },
+            "description": "An external data resource that is linked to a ResourceVolume by the orchestration system, making it appear as part of the filesystem inside the execution environment. TODO - this has two meanings, a request for some data and the actual resource that provides it."
         },
         "StorageResourceType": {
             "type": "object",
@@ -109,17 +119,42 @@
                 {"$ref": "#/definitions/BasicComplexType"}
             ],
             "properties": {
-                "minsize": {"type": "integer"},
-                "maxsize": {"type": "integer"},
+                "minsize": {
+                    "type": "integer",
+                    "description": "The minimum size in GiB (2^30) bytes. This is typically set by the client to indicate the minimum space required to store the data."
+                },
+                "maxsize": {
+                    "type": "integer",
+                    "description": "The maximum size in GiB (2^30) bytes. This is typically set by the service to indicate the maximum space available for use."
+                },
                 "minlifetime": {
                     "type": "string",
-                    "format": "duration"
+                    "format": "duration",
+                    "description": "The minimum lifeime of the storage resource, expressed as an ISO8601 duration. This would typically be set by the client to indicate how long the user wants to store the data for."
                 },
                 "maxlifetime": {
                     "type": "string",
-                    "format": "duration"
+                    "format": "duration",
+                    "description": "The maximum lifeime of the storage resource, expressed as an ISO8601 duration. This would typically be set by the service to indicate how long the data will be stored for."
+                },
+                "latency": {
+                    "enum": [
+                        "LOW",
+                        "MEDIUM",
+                        "HIGH"
+                    ],
+                    "description": "The latency for random access read/write operations. TODO this needs more discussion, should we have a numeric value in ms, or are the general 'LOW, MEDIUM, HIGH' values enough."
+                },
+                "bandwidth": {
+                    "enum": [
+                        "LOW",
+                        "MEDIUM",
+                        "HIGH"
+                    ],
+                    "description": "The bandwidth for random access read/write operations. TODO this needs more discussion, should we have a numeric value in ms, or are the general 'LOW, MEDIUM, HIGH' values enough."
                 }
-            }
+            },
+            "description": "A strogare resource, provided by the orchestration system but separate from the individual compute resources. An example would be space on a shared CephFS storage systen that persists beyond the end of the task execution."
         },
         "ComputeResourceType": {
             "type": "object",
