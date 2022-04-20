@@ -1,29 +1,40 @@
 {
-    "$id": "https://bit.ly/3Lc5WRz",
-    "$schema": "https://json-schema.org/draft-07/schema",
+    "$id": "https://purl.org/ep.ivoa.net/schema/json/executable-lease",
+    "$schema": "http://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "properties": {
         "status": {
             "enum": [
+                "REQUESTED",
                 "OFFERED",
                 "ACCEPTED",
                 "REJECTED",
                 "EXPIRED"
-            ]
+            ],
+            "description": "An enum indicating where in it's life cycle the lease is."
         },
-        "offerenddate": {
+        "expirydate": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "The expiry date after which an OFFERED lease is no longer available to ACCEPT. This property would be set by the service making an offer to indicates how long a client has before it must accept the offer to reserve the lease."
         },
-        "leasestartdate": {
+        "startdate": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "The date/time when the lease starts."
         },
-        "leaseenddate": {
+        "enddate": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "The date/time when the lease ends. Any task still executing after this point may be terminated and any resources associated with the lease may no longer be available unless they have been explicitly reserved beyond the end of the lease."
         },
-        "platform": {"$ref": "https://bit.ly/3upmE9p#/definitions/ComputePlatformType"},
-        "task": {"$ref": "https://bit.ly/3upmE9p"}
+        "platform": {
+            "$ref": "https://purl.org/ep.ivoa.net/schema/json/executable-task#/definitions/ComputePlatformType",
+            "description": "A description of the ComputePlatform where the Lease would be executed. This primarily for human consumption, providing the user with additional information to help them choose which lease to select."
+        },
+        "task": {
+            "$ref": "https://purl.org/ep.ivoa.net/schema/json/executable-task#/definitions/ExecutableTaskType",
+            "description": "A description of the ExecutableTask including deatils of the compute, data and storage resources needed to execute it."
+        }
     }
 }
