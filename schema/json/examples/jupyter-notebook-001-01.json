@@ -1,0 +1,9 @@
+{
+  "uuid": "9199ce61-8506-4742-ab2a-f5e405f55c8d",
+  "type": "https://purl.org/esap.escape.eu/task-type/jupyter-notebook",
+  "description": "A simple Jupyter notebook",
+  "jupyter-task": {
+    "notebook-url": "http://..."
+  }
+}
+

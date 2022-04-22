@@ -6,5 +6,6 @@
 *.pdf
 *.toc
 *.xpr
+.project
 ivoatexmeta.tex
 

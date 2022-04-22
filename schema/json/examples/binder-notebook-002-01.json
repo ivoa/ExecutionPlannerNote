@@ -1,0 +1,62 @@
+{
+  "uuid": "9199ce61-8506-4742-ab2a-f5e405f55c8d",
+  "type": "https://purl.org/esap.escape.eu/task-type/binder-notebook",
+  "description": "A binder notebook that applies a set of calibration data to a set of images.",
+  "binder-task": {
+    "repository-type": "gitlab",
+    "repository-url": "http://...",
+    "path": "calibrator.ipynb"
+  },
+  "data-resources": [
+    {
+      "uuid": "b77cc829-ac12-43b5-9dbe-48cfa727d14c",
+      "type": "urn:data-reference",
+      "description": "The raw images to be processed.",
+      "data-type": "urn:astronomy-image-data",
+      "mime-type": "image/fits"
+    },
+    {
+      "uuid": "47a32306-84b4-4d48-8999-7795d841b838",
+      "type": "urn:data-reference",
+      "description": "The calibration data to use.",
+      "data-type": "urn:astronomy-calibration-data",
+      "mime-type": "image/fits"
+    },
+    {
+      "uuid": "5b728187-2d7d-4e54-8cac-dbe7b3871cfd",
+      "type": "urn:data-value",
+      "description": "The calibration level to use, from 0 to 8.",
+      "data-type": "integer"
+    }
+  ],
+  "compute-resources": [
+    {
+      "uuid": "98710596-625b-4623-ba7d-8024fc88181b",
+      "type": "urn:generic-compute",
+      "environment-variables": [
+        {
+          "name": "IMAGE_FILES_PATH",
+          "value": "/images"
+        },
+        {
+          "name": "CALIBRATION_FILES_PATH",
+          "value": "/calibration"
+        },
+        {
+          "name": "CALIBRATION_LEVEL",
+          "resource": "5b728187-2d7d-4e54-8cac-dbe7b3871cfd"
+        }
+      ],
+      "data-volumes": [
+        {
+          "path": "/images",
+          "resource": "b77cc829-ac12-43b5-9dbe-48cfa727d14c"
+        },
+        {
+          "path": "/calibration",
+          "resource": "47a32306-84b4-4d48-8999-7795d841b838"
+        }
+      ]
+    }
+  ]
+}
