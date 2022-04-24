@@ -344,8 +344,25 @@
         }
       }
     },
+    "GenericExecutionService": {
+      "description": "A generic execution service.",
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/BasicComplexType"
+        }
+      ],
+      "properties": {
+        "service": {
+          "description": "Details of the service, including how to connect to it.",
+          "type": "object",
+          "properties": {
+          }
+        }
+      }
+    },
     "JupyterExecutableTask": {
-      "description": "A generic Jupyter notebook with no additional dependencies. See [https://jupyter.org/].",
+      "description": "A Jupyter notebook with no additional dependencies.\nSee [https://jupyter.org/].",
       "type": "object",
       "allOf": [
         {
@@ -356,7 +373,7 @@
         "type": {
           "const": "https://purl.org/esap.escape.eu/task-type/jupyter-notebook"
         },
-        "jupyter-task": {
+        "task": {
           "type": "object",
           "properties": {
             "notebook-url": {
@@ -368,8 +385,32 @@
         }
       }
     },
+    "JupyterRestService": {
+      "description": "A reference to the REST interface of a Jupyter notebook service.\nSee [https://jupyter.org/].",
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/GenericExecutionService"
+        }
+      ],
+      "properties": {
+        "type": {
+          "const": "https://purl.org/esap.escape.eu/service-type/jupyter-rest"
+        },
+        "service": {
+          "type": "object",
+          "properties": {
+            "endpoint": {
+              "description": "The REST service endpoint URL.",
+              "type": "string",
+              "format": "url"
+            }
+          }
+        }
+      }
+    },
     "BinderExecutableTask": {
-      "description": "A Binder compatible notebook task. See [https://mybinder.org/]",
+      "description": "A Binder compatible notebook task.\nSee [https://mybinder.org/]",
       "type": "object",
       "allOf": [
         {
@@ -380,7 +421,7 @@
         "type": {
           "const": "https://purl.org/esap.escape.eu/task-type/binder-notebook"
         },
-        "binder-task": {
+        "task": {
           "type": "object",
           "properties": {
             "repository-type": {
@@ -407,6 +448,30 @@
           }
         }
       }
-    }
+    },
+    "BinderRestService": {
+      "description": "A reference to the REST interface of a BinderHub service.\nSee [https://mybinder.org/].",
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/definitions/GenericExecutionService"
+        }
+      ],
+      "properties": {
+        "type": {
+          "const": "https://purl.org/esap.escape.eu/service-type/binder-rest"
+        },
+        "service": {
+          "type": "object",
+          "properties": {
+            "endpoint": {
+              "description": "The REST service endpoint URL.",
+              "type": "string",
+              "format": "url"
+            }
+          }
+        }
+      }
+    },
   }
 }
