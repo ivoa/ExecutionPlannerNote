@@ -28,13 +28,17 @@
             "format": "date-time",
             "description": "The date/time when the lease ends. Any task still executing after this point may be terminated and any resources associated with the lease may no longer be available unless they have been explicitly reserved beyond the end of the lease."
         },
-        "platform": {
-            "$ref": "https://purl.org/ep.ivoa.net/schema/json/executable-task#/definitions/ComputePlatformType",
-            "description": "A description of the ComputePlatform where the Lease would be executed. This primarily for human consumption, providing the user with additional information to help them choose which lease to select."
-        },
         "task": {
             "$ref": "https://purl.org/ep.ivoa.net/schema/json/executable-task#/definitions/ExecutableTaskType",
-            "description": "A description of the ExecutableTask including details of the compute, data and storage resources needed to execute it."
+            "description": "A description of the ExecutableTask, including details of the compute, data and storage resources needed to execute it."
+        },
+        "service": {
+            "$ref": "https://purl.org/ep.ivoa.net/schema/json/executable-task#/definitions/ExecutionServiceType",
+            "description": "A description of the ExecutionService, including details of how to connect to it."
+        },
+        "platform": {
+            "$ref": "https://purl.org/ep.ivoa.net/schema/json/executable-task#/definitions/ComputePlatformType",
+            "description": "A description of the ComputePlatform where the Lease would be executed.\nThis primarily for human consumption, providing the user with additional information to help them choose which lease to select."
         }
     }
 }
