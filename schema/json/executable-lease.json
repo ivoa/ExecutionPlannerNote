@@ -2,6 +2,11 @@
     "$id": "https://purl.org/ep.ivoa.net/schema/json/executable-lease",
     "$schema": "http://json-schema.org/draft/2020-12/schema",
     "type": "object",
+    "allOf": [
+      {
+      "$ref": "https://purl.org/ep.ivoa.net/schema/json/executable-task#/definitions/BasicComplexType"
+      }
+    ],
     "properties": {
         "status": {
             "enum": [
