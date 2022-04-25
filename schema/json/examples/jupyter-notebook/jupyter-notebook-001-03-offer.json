@@ -21,10 +21,5 @@
     "service": {
       "endpoint": "http://..."
     }
-  },
-  "platform": {
-    "uuid": "5e305d2e-0277-49dd-8ff9-fb9eeb970ad2",
-    "type": "https://purl.org/esap.escape.eu/platform-type/jupyter-hub",
-    "description": "The Jive JupyterHub platform",
   }
 }
