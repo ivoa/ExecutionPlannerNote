@@ -57,17 +57,17 @@
         },
         {
           "name": "CALIBRATION_LEVEL",
-          "resource": "5b728187-2d7d-4e54-8cac-dbe7b3871cfd"
+          "data": "5b728187-2d7d-4e54-8cac-dbe7b3871cfd"
         }
       ],
       "data-volumes": [
         {
           "path": "/images",
-          "resource": "b77cc829-ac12-43b5-9dbe-48cfa727d14c"
+          "data": "b77cc829-ac12-43b5-9dbe-48cfa727d14c"
         },
         {
           "path": "/calibration",
-          "resource": "47a32306-84b4-4d48-8999-7795d841b838"
+          "data": "47a32306-84b4-4d48-8999-7795d841b838"
         }
       ]
     }
