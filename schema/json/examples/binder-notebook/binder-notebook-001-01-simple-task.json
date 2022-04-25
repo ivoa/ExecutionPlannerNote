@@ -1,10 +1,12 @@
 {
-  "uuid": "9199ce61-8506-4742-ab2a-f5e405f55c8d",
+  "uuid": "8b7228b4-7af5-4671-9a23-184e3a191b42",
   "type": "https://purl.org/esap.escape.eu/task-type/binder-notebook",
   "description": "A simple Binder notebook",
-  "binder-task": {
-    "repository-type": "gitlab",
-    "repository-url": "http://...",
+  "task": {
+    "repository": {
+      "type": "gitlab",
+      "url": "http://..."
+    },
     "path": "example.ipynb"
   }
 }
