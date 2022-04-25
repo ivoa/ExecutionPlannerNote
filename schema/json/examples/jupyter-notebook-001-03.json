@@ -1,8 +1,9 @@
 {
-  "status":"OFFERED",
-  "expirydate": "20220424T175700",
-  "startdate":  "20220424T175700",
-  "enddate":    "20220424T185700",
+  "uuid": "4ddcb0eb-ce39-4a08-88c2-2396cebaf9d6",
+  "type": "https://purl.org/ep.ivoa.net/definitions/executable-lease",
+  "description": "An example lease request",
+  "status":"REQUESTED",
+  "startdate":  "20220424T120000",
   "task": {
     "uuid": "9199ce61-8506-4742-ab2a-f5e405f55c8d",
     "type": "https://purl.org/esap.escape.eu/task-type/jupyter-notebook",
@@ -10,18 +11,5 @@
     "task": {
       "notebook": "http://..."
     }
-  },
-  "service": {
-    "uuid": "9199ce61-8506-4742-ab2a-f5e405f55c8d",
-    "type": "https://purl.org/esap.escape.eu/service-type/jupyter-notebook",
-    "description": "A simple Jupyter service",
-    "service": {
-      "endpoint": "http://..."
-    }
-  },
-  "platform": {
-    "uuid": "5e305d2e-0277-49dd-8ff9-fb9eeb970ad2",
-    "type": "https://purl.org/esap.escape.eu/platform-type/jupyter-hub",
-    "description": "A simple JupyterHub platform",
   }
 }

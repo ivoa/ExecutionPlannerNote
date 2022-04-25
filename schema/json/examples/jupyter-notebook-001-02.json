@@ -1,7 +1,7 @@
 {
   "uuid": "9199ce61-8506-4742-ab2a-f5e405f55c8d",
-  "type": "https://purl.org/esap.escape.eu/service-type/jupyter-notebook",
-  "description": "A simple Jupyter service",
+  "type": "https://purl.org/esap.escape.eu/service-type/jupyter-hub",
+  "description": "A JupyterHub service",
   "service": {
     "endpoint": "http://..."
   }
