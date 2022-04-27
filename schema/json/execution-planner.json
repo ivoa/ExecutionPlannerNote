@@ -14,14 +14,10 @@
         "ExecutableResponseType": {
             "type": "object",
             "properties": {
-                "offered": {
+                "offers": {
                     "type": "array",
                     "$ref": "#/definitions/ExecutableLeaseType"
                 },
-                "rejected": {
-                    "type": "array",
-                    "$ref": "#/definitions/ExecutableLeaseType"
-                }
             }
         }
     }
