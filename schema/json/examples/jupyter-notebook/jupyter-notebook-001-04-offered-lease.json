@@ -2,7 +2,7 @@
   "uuid": "4ddcb0eb-ce39-4a08-88c2-2396cebaf9d6",
   "url": "http://example/.../4ddcb0eb-ce39-4a08-88c2-2396cebaf9d6",
   "type": "https://purl.org/ep.ivoa.net/definitions/executable-lease",
-  "description": "A statefull lease offer",
+  "description": "A lease offer",
   "status":"OFFERED",
   "expirydate": "20220424T100000",
   "startdate":  "20220424T120000",
